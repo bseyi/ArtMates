@@ -48,7 +48,6 @@ public class SignupActivity extends AppCompatActivity {
                 String email = etEmail.getText().toString();
 
                 signUpUser(username, password, email);
-                goToLoginActivity();
             }
         });
 
@@ -77,11 +76,18 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
-    public  void goToLoginActivity() {
+    public void goToLoginActivity() {
         Intent i = new Intent(this, LoginActivity.class);
         startActivity(i);
         finish();
     }
 
+    public void goToCreateProfileActivity(){
+        Intent i = new Intent(this, CreateProfileAcivity.class);
+        startActivity(i);
+        finish();
+    }
+
 }
+
 

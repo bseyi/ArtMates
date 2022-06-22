@@ -56,7 +56,6 @@
         android:ems="10"
         android:fontFamily="@font/open_sans"
         android:hint="Enter Gender"
-        android:inputType="textPassword"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etEmail" />
@@ -70,7 +69,6 @@
         android:ems="10"
         android:fontFamily="@font/open_sans"
         android:hint="@string/enter_pronouns"
-        android:inputType="textPassword"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etEmail" />
@@ -84,7 +82,6 @@
         android:ems="10"
         android:fontFamily="@font/open_sans"
         android:hint="@string/enter_age"
-        android:inputType="textPassword"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etEmail" />

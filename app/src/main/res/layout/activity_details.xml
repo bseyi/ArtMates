@@ -45,7 +45,7 @@
 
 
     <TextView
-        android:id="@+id/tvBudget"
+        android:id="@+id/tvPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="72dp"
@@ -71,7 +71,7 @@
         android:layout_marginStart="4dp"
         android:layout_marginTop="12dp"
         android:fontFamily="@font/open_sans_bold"
-        android:text="About Art"
+        android:text="About my masterpiece"
         android:textColor="@color/black"
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -99,19 +99,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider" />
 
+
     <TextView
         android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
+        android:layout_marginStart="80dp"
         android:layout_marginTop="24dp"
         android:fontFamily="@font/open_sans_bold"
         android:text="Available Date"
         android:textColor="@color/black"
         android:textSize="14sp"
-        app:layout_constraintStart_toEndOf="@+id/tvBudget"
+        app:layout_constraintStart_toEndOf="@+id/tvPrice"
         app:layout_constraintTop_toBottomOf="@+id/divider" />
-
 
     <TextView
         android:id="@+id/tvDate"

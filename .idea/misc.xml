@@ -12,12 +12,13 @@
         <entry key="app/src/main/res/font/open_sans_bold.xml" value="0.5927083333333333" />
         <entry key="app/src/main/res/font/open_sans_semibold.xml" value="0.6203125" />
         <entry key="app/src/main/res/layout/activity_compose.xml" value="0.5635416666666667" />
+        <entry key="app/src/main/res/layout/activity_create_profile_acivity.xml" value="0.5911458333333334" />
         <entry key="app/src/main/res/layout/activity_details.xml" value="0.5911458333333334" />
         <entry key="app/src/main/res/layout/activity_forgot_password.xml" value="0.4741847826086957" />
         <entry key="app/src/main/res/layout/activity_landing_page.xml" value="0.5901041666666667" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.5635416666666667" />
-        <entry key="app/src/main/res/layout/activity_signup.xml" value="0.5770833333333333" />
+        <entry key="app/src/main/res/layout/activity_signup.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_posts.xml" value="0.5901041666666667" />
         <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.4741847826086957" />
         <entry key="app/src/main/res/layout/item_post.xml" value="0.5901041666666667" />

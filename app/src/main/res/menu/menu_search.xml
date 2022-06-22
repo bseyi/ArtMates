@@ -15,9 +15,9 @@
         android:title="Newest" />
     <item android:id="@+id/oldest"
         android:title="Oldest" />
-    <item android:id="@+id/budget_asc"
+    <item android:id="@+id/price_asc"
         android:title="Lowest Price" />
-    <item android:id="@+id/budget_dsc"
+    <item android:id="@+id/price_dsc"
         android:title="Highest price" />
     <item android:id="@+id/early_date"
         android:title="Earliest Available Date" />
