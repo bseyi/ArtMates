@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/actionHome"
+        android:icon="@drawable/instagram_home_outline_24"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/actionCompose"
+        android:icon="@drawable/instagram_new_post_outline_24"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/actionProfile"
+        android:icon="@drawable/instagram_user_outline_24"
+        app:showAsAction="always" />
+
+</menu>
