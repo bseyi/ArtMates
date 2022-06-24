@@ -21,7 +21,7 @@
         tools:text="Username" />
 
     <TextView
-        android:id="@+id/tvLocation"
+        android:id="@+id/tvLocation2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/open_sans_semibold"
@@ -31,7 +31,7 @@
         tools:text="location" />
 
     <TextView
-        android:id="@+id/tvAboutMe"
+        android:id="@+id/tvAboutArt"
         android:layout_width="370dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
@@ -53,7 +53,7 @@
         android:fontFamily="@font/open_sans"
         android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvAboutMe"
+        app:layout_constraintTop_toBottomOf="@+id/tvAboutArt"
         tools:text="price" />
 
     <ImageView
@@ -84,7 +84,7 @@
         android:layout_marginTop="24dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvAboutMe" />
+        app:layout_constraintTop_toBottomOf="@+id/tvAboutArt" />
 
     <TextView
         android:id="@+id/textView5"
@@ -122,7 +122,7 @@
         android:fontFamily="@font/open_sans"
         android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvAboutMe"
+        app:layout_constraintTop_toBottomOf="@+id/tvAboutArt"
         tools:text="date" />
 
     <View

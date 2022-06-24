@@ -1,6 +1,5 @@
 package com.example.artmates;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -17,10 +16,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.artmates.fragments.ParcelableObject;
 import com.parse.ParseFile;
-
-import org.parceler.Parcels;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -75,7 +71,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> im
             ivImage = itemView.findViewById(R.id.ivImage);
             tvDescription = itemView.findViewById(R.id.tvDescription);
             timeStamp = itemView.findViewById(R.id.timeStamp);
-            tvLocation = itemView.findViewById(R.id.tvLocation);
+            tvLocation = itemView.findViewById(R.id.tvLocation2);
             postContainer = itemView.findViewById(R.id.postContainer);
 //            tvAge = itemView.findViewById(R.id.tvAge);
             profilePic = itemView.findViewById(R.id.ivProfileImage);

@@ -31,7 +31,7 @@ import java.util.List;
 
 public class PostFragment extends Fragment {
 
-    public static final String TAG = "PostsFragment";
+    private static final String TAG = "PostsFragment";
     private static final int POST_LIMIT = 20;
     private RecyclerView rvPosts;
     private PostAdapter adapter;

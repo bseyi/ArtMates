@@ -13,7 +13,7 @@
     <string name="Gender" />
     <string name="Pronouns" />
     <string name="Age" />
-    <string name="enter_username">Enter Username</string>
+    <string name="enter_username">Enter Username </string>
     <string name="enter_email">Enter email</string>
     <string name="enter_password">Enter password</string>
     <string name="enter_pronouns">Enter Pronouns</string>
@@ -27,4 +27,5 @@
     <string name="TimeStamp" />
     <string name="description" />
     <string name="location">Location</string>
+    <string name="google_maps_api_key">AIzaSyBZEPxmqm7pUFd0pC0_m0zICk4B0J1TpyI</string>
 </resources>

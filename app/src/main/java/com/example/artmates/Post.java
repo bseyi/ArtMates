@@ -35,20 +35,20 @@ public class Post extends ParseObject {
         put(KEY_LOCATION, location);
     }
 
-    public String getAboutMe() {
+    public String getAboutArt() {
         return getString(KEY_ABOUT_ART);
     }
 
-    public void setAboutMe(String aboutMe) {
-        put(KEY_ABOUT_ART, aboutMe);
+    public void setAboutArt(String aboutArt) {
+        put(KEY_ABOUT_ART, aboutArt);
     }
 
     public String getPrice() {
         return getString(KEY_PRICE);
     }
 
-    public void setPrice(String budget) {
-        put(KEY_PRICE, budget);
+    public void setPrice(String price) {
+        put(KEY_PRICE, price);
     }
 
     public String getAvailableDate() {
