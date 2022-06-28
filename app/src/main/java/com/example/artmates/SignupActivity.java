@@ -23,7 +23,9 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
 
 import java.io.File;
@@ -41,10 +43,13 @@ public class SignupActivity extends AppCompatActivity {
     private Button btnSignUp2;
     private Button btnTakePhoto;
     private Button btnUploadPhoto;
+    private EditText etFullName;
     private File photoFile;
     private static final int PICK_PHOTO_CODE = 1042;
     private Context context;
     private String photoFileName = "photo.jpg";
+    static final String USER_ID_KEY = "userId";
+    static final String BODY_KEY = "body";
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +63,7 @@ public class SignupActivity extends AppCompatActivity {
         btnTakePhoto = findViewById(R.id.btnTakePhoto2);
         btnUploadPhoto = findViewById(R.id.btnUploadPhoto2);
         ivProfileImage2 = findViewById(R.id.ivProfileImage2);
+        etFullName = findViewById(R.id.etFullName);
 
         btnTakePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,21 +93,39 @@ public class SignupActivity extends AppCompatActivity {
                 String username = etNewUser.getText().toString();
                 String password = etNewPassword.getText().toString();
                 String email = etEmail.getText().toString();
+                String fullName = etFullName.getText().toString();
                 ParseUser user = ParseUser.getCurrentUser();
-                signUpUser(username, password, email);
+                signUpUser(username, password, email, fullName);
             }
         });
 
     }
 
-    private void signUpUser(String username, String password, String email) {
+    private void signUpUser(String username, String password, String email, String fullName) {
         Log.i(TAG, "Attempting to login user");
 
         ParseUser user = new ParseUser();
         user.setUsername(username);
         user.setPassword(password);
         user.setEmail(email);
+        user.put("fullName", fullName);
 
+//        String data = etFullName.getText().toString();
+//        ParseObject fullName = ParseObject.create("fullName");
+//        fullName.put(USER_ID_KEY, ParseUser.getCurrentUser().getObjectId());
+//        fullName.put(BODY_KEY, data);
+//        fullName.saveInBackground(new SaveCallback() {
+//            @Override
+//            public void done(ParseException e) {
+//                if (e == null) {
+//                    Toast.makeText(SignupActivity.this, "Successfully created message on Parse",
+//                            Toast.LENGTH_SHORT).show();
+//                } else {
+//                    Log.e(TAG, "Failed to save message", e);
+//                }
+//            }
+//        });
+//        etFullName.setText(user);
         user.signUpInBackground(new SignUpCallback() {
             @Override
             public void done(ParseException e) {
@@ -115,6 +139,7 @@ public class SignupActivity extends AppCompatActivity {
                 }
             }
         });
+
     }
 
     public void goToLoginActivity() {

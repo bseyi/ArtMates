@@ -33,7 +33,7 @@ public class PostFragment extends Fragment {
 
     private static final String TAG = "PostsFragment";
     private static final int POST_LIMIT = 20;
-    private RecyclerView rvPosts;
+    protected RecyclerView rvPosts;
     private PostAdapter adapter;
     private List<Post> allPosts;
     private SwipeRefreshLayout swipeContainer;

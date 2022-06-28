@@ -55,25 +55,23 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> im
         return postsToDisplay.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView tvDescription;
         private TextView tvUsername;
         private ImageView ivImage;
         private TextView timeStamp;
         private TextView tvLocation;
         private ConstraintLayout postContainer;
-        private TextView tvAge;
         private ImageView profilePic;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvUsername = itemView.findViewById(R.id.tvUsername);
-            ivImage = itemView.findViewById(R.id.ivImage);
+            ivImage = itemView.findViewById(R.id.ivImage2);
             tvDescription = itemView.findViewById(R.id.tvDescription);
             timeStamp = itemView.findViewById(R.id.timeStamp);
             tvLocation = itemView.findViewById(R.id.tvLocation2);
             postContainer = itemView.findViewById(R.id.postContainer);
-//            tvAge = itemView.findViewById(R.id.tvAge);
             profilePic = itemView.findViewById(R.id.ivProfileImage);
         }
 

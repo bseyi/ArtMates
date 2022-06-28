@@ -21,7 +21,7 @@
         tools:text="Username" />
 
     <ImageView
-        android:id="@+id/ivImage"
+        android:id="@+id/ivImage2"
         android:layout_width="match_parent"
         android:layout_height="255dp"
         android:layout_marginStart="4dp"
@@ -40,7 +40,7 @@
         android:fontFamily="@font/open_sans_semibold"
         android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivImage"
+        app:layout_constraintTop_toBottomOf="@+id/ivImage2"
         tools:text="Description" />
 
     <TextView
@@ -75,7 +75,8 @@
         android:layout_marginTop="4dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/avatars" />
+        app:srcCompat="@drawable/instagram_user_outline_24"
+        tools:srcCompat="@drawable/instagram_user_outline_24" />
 
     <ImageButton
         android:id="@+id/imageButton"

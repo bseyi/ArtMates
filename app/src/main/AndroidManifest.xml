@@ -5,12 +5,16 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA"/>
 
     <queries>
 
         <!-- CameraClass -->
         <intent>
             <action android:name="android.media.action.IMAGE_CAPTURE" />
+        </intent>
+        <intent>
+            <action android:name="android.media.action.ACTION_PICK" />
         </intent>
     </queries>
 
@@ -23,11 +27,15 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ArtMates"
+        android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
         tools:targetApi="31">
         <activity
-            android:name=".DatePicker"
+            android:name=".InfoActivity"
             android:exported="false" />
+        <activity
+            android:name=".DatePicker"
+            android:exported="false"
+            tools:ignore="Instantiatable" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -37,11 +45,12 @@
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/fileprovider" />
-        </provider> <!-- <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" /> -->
-        <!-- <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="@string/google_maps_api_key" /> -->
+        </provider>
+
         <activity
             android:name=".DetailsActivity"
             android:exported="false" />
+
         <activity
             android:name=".ForgotPassword"
             android:exported="false" />

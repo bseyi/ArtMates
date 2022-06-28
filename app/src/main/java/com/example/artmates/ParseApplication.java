@@ -17,5 +17,6 @@ public class ParseApplication extends Application {
                 .build()
         );
         ParseObject.registerSubclass(Post.class);
+
     }
 }

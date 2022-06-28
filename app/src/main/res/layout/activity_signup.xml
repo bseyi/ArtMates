@@ -48,40 +48,14 @@
         app:layout_constraintTop_toBottomOf="@+id/etEmail" />
 
     <EditText
-        android:id="@+id/etGender"
+        android:id="@+id/etFullName"
         android:layout_width="340dp"
         android:layout_height="40dp"
         android:layout_marginTop="48dp"
         android:layout_marginEnd="28dp"
         android:ems="10"
         android:fontFamily="@font/open_sans"
-        android:hint="Enter Gender"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etEmail" />
-
-    <EditText
-        android:id="@+id/etPronouns"
-        android:layout_width="340dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="88dp"
-        android:layout_marginEnd="28dp"
-        android:ems="10"
-        android:fontFamily="@font/open_sans"
-        android:hint="@string/enter_pronouns"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etEmail" />
-
-    <EditText
-        android:id="@+id/etAge"
-        android:layout_width="340dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="128dp"
-        android:layout_marginEnd="28dp"
-        android:ems="10"
-        android:fontFamily="@font/open_sans"
-        android:hint="@string/enter_age"
+        android:hint="Enter FullName"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etEmail" />

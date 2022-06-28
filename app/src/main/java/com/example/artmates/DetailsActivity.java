@@ -5,16 +5,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class DetailsActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
@@ -30,6 +34,7 @@ public class DetailsActivity extends AppCompatActivity implements DatePickerDial
     private TextView tvDate;
     private TextView date;
     private Post post;
+    private ListView lvLabels;
 
 
     @Override
@@ -38,7 +43,7 @@ public class DetailsActivity extends AppCompatActivity implements DatePickerDial
         setContentView(R.layout.activity_details);
 
         tvUsername = findViewById(R.id.tvUsername);
-        ivImage = findViewById(R.id.ivImage);
+        ivImage = findViewById(R.id.ivImage2);
         tvDescription = findViewById(R.id.tvDescription);
         tvLocation = findViewById(R.id.tvLocation2);
         tvAboutArt = findViewById(R.id.tvAboutArt);
@@ -47,6 +52,7 @@ public class DetailsActivity extends AppCompatActivity implements DatePickerDial
         profilePic = findViewById(R.id.profilePic);
         tvDate = findViewById(R.id.tvDate);
         date = findViewById(R.id.date);
+        lvLabels = findViewById(R.id.lvLabels);
 
 
         post = getIntent().getParcelableExtra("posts");
@@ -83,6 +89,11 @@ public class DetailsActivity extends AppCompatActivity implements DatePickerDial
         if (tvDate != null) {
             tvDate.setText((String) post.get("available_date"));
         }
+//        final List<String> predicitonsList = new ArrayList<>();
+//
+//        ArrayAdapter<String> predictionsAdapter = new ArrayAdapter<>(
+//                this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, predicitonsList);
+//        lvLabels.setAdapter(predictionsAdapter);
 
 //        ParseFile profileImg = (ParseFile) postUser.get("profileImage");
 //        if (profilePic != null) {

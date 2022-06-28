@@ -48,7 +48,7 @@
         android:id="@+id/tvPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="72dp"
+        android:layout_marginStart="60dp"
         android:layout_marginTop="48dp"
         android:fontFamily="@font/open_sans"
         android:textColor="@color/black"
@@ -62,7 +62,8 @@
         android:layout_height="49dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/avatars" />
+        app:srcCompat="@drawable/instagram_user_outline_24"
+        tools:srcCompat="@drawable/instagram_user_outline_24" />
 
     <TextView
         android:id="@+id/textView4"
@@ -135,14 +136,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider" />
 
-    <FrameLayout
-        android:id="@+id/fragment_container_view"
-        android:name="com.example.gradmates.MapFragment"
-        android:layout_width="418dp"
-        android:layout_height="430dp"
+    <ListView
+        android:id="@+id/lvLabels"
+        android:layout_width="wrap_content"
+        android:layout_height="350dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/divider2"
+        app:layout_constraintVertical_bias="0.991" />
 
-    </FrameLayout>
+    <ImageView
+        android:id="@+id/ivPost"
+        android:layout_width="73dp"
+        android:layout_height="54dp"
+        app:layout_constraintBottom_toTopOf="@+id/lvLabels"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
