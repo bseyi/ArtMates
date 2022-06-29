@@ -19,7 +19,7 @@ import android.view.ViewGroup;
 import android.widget.SearchView;
 
 import com.example.artmates.Post;
-import com.example.artmates.PostAdapter;
+import com.example.artmates.adapters.PostAdapter;
 import com.example.artmates.R;
 import com.parse.FindCallback;
 import com.parse.ParseException;

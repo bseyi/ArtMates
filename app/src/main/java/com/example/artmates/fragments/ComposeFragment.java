@@ -23,19 +23,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.artmates.CameraActivity;
 import com.example.artmates.DatePicker;
-import com.example.artmates.MainActivity;
+import com.example.artmates.ImageClassifier;
+import com.example.artmates.activities.MainActivity;
 import com.example.artmates.Post;
 import com.example.artmates.R;
-import com.example.artmates.SignupActivity;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
@@ -44,7 +45,9 @@ import com.parse.SaveCallback;
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 
 public class ComposeFragment extends Fragment implements DatePickerDialog.OnDateSetListener{
@@ -59,13 +62,18 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
     private EditText tvLocation2;
     private EditText etAboutWork;
     private ImageView ivProfileImage2;
-    private EditText etPrice;
     private TextView availableDate;
     public String photoFileName = "photo.jpg";
     private File photoFile;
     private Button btnSubmit;
     private ImageButton ibDate;
     public static final int PICK_PHOTO_CODE = 1042;
+    private ImageClassifier imageClassifier;
+    private static final int CAMERA_PERMISSION_REQUEST_CODE = 1000;
+    private static final int CAMERA_REQUEST_CODE = 10001;
+    private ListView lvLabels;
+
+
 
 
 
@@ -89,10 +97,16 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
         tvCaption = view.findViewById(R.id.tvCaption);
         tvLocation2 = view.findViewById(R.id.tvLocation2);
         etAboutWork = view.findViewById(R.id.etAboutWork);
-        etPrice = view.findViewById(R.id.etPrice);
         availableDate = view.findViewById(R.id.availableDate);
         btnSubmit = view.findViewById(R.id.btnSubmit);
         ibDate = view.findViewById(R.id.ibDate);
+        lvLabels = view.findViewById(R.id.lvLabels);
+
+        try {
+            imageClassifier = new ImageClassifier(this.getActivity());
+        } catch (IOException e) {
+            Log.e("Image Classifier Error", "ERROR: " + e);
+        }
 //        ivProfileImage2 = view.findViewById(R.id.ivProfileImage2);
 
 
@@ -116,7 +130,6 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
                 String description = tvCaption.getText().toString();
                 String location = tvLocation2.getText().toString();
                 String aboutWork = etAboutWork.getText().toString();
-                String price = etPrice.getText().toString();
                 String date = availableDate.getText().toString();
                 if(description.isEmpty()){
                     Toast.makeText(getContext(), "Description cannot be empty", Toast.LENGTH_SHORT).show();
@@ -130,10 +143,6 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
                     Toast.makeText(getContext(), "About work cannot be empty", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if(price.isEmpty()){
-                    Toast.makeText(getContext(), "Price cannot be empty", Toast.LENGTH_SHORT).show();
-                    return;
-                }
                 if(date.isEmpty()){
                     Toast.makeText(getContext(), "Available date cannot be empty", Toast.LENGTH_SHORT).show();
                 }
@@ -142,7 +151,7 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
                     return;
                 }
                 ParseUser currentUser = ParseUser.getCurrentUser();
-                savePost(description,aboutWork, price, location, date, currentUser, photoFile);
+                savePost(description,aboutWork, location, date, currentUser, photoFile);
             }
         });
 
@@ -175,7 +184,21 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
             if (resultCode == RESULT_OK) {
                 Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
                 ivPostImage.setImageBitmap(takenImage);
-            } else {
+                List<ImageClassifier.Recognition> predicitons = imageClassifier.recognizeImage(
+                        takenImage, 0);
+
+                // creating a list of string to display in list view
+                final List<String> predicitonsList = new ArrayList<>();
+                for (ImageClassifier.Recognition recog : predicitons) {
+                    predicitonsList.add(recog.getName() + "  ::::::::::  " + recog.getConfidence());
+                }
+
+                // creating an array adapter to display the classification result in list view
+                ArrayAdapter<String> predictionsAdapter = new ArrayAdapter<>(
+                        getContext(), androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, predicitonsList);
+                lvLabels.setAdapter(predictionsAdapter);
+            }
+            else {
                 Toast.makeText(getContext(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
             }
         }
@@ -204,19 +227,19 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
         // Create intent for picking a photo from the gallery
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
-        startActivityForResult(intent, PICK_PHOTO_CODE);
+        if (intent.resolveActivity(getContext().getPackageManager()) != null) {
+            // Bring up gallery to select a photo
+            startActivityForResult(intent, PICK_PHOTO_CODE);
+        }
     }
 
     public Bitmap loadFromUri(Uri photoUri) {
         Bitmap image = null;
         try {
-            // check version of Android on device
             if(Build.VERSION.SDK_INT > 27){
-                // on newer versions of Android, use the new decodeBitmap method
                 ImageDecoder.Source source = ImageDecoder.createSource(this.getContext().getContentResolver(), photoUri);
                 image = ImageDecoder.decodeBitmap(source);
             } else {
-                // support older versions of Android by using getBitmap
                 image = MediaStore.Images.Media.getBitmap(this.getContext().getContentResolver(), photoUri);
             }
         } catch (IOException e) {
@@ -225,12 +248,11 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
         return image;
     }
 
-    private void savePost(String description,String aboutArt,String price,String location, String date, ParseUser currentUser, File photoFile) {
+    private void savePost(String description,String aboutArt,String location, String date, ParseUser currentUser, File photoFile) {
         Post post = new Post();
         post.setDescription(description);
         post.setLocation(location);
         post.setAboutArt(aboutArt);
-        post.setPrice(price);
         post.setAvailableDate(date);
         post.setImage(new ParseFile(photoFile));
         post.setUser(currentUser);
@@ -245,7 +267,6 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
                 tvCaption.setText("");
                 tvLocation2.setText("");
                 etAboutWork.setText("");
-                etPrice.setText("");
                 availableDate.setText("");
                 ivPostImage.setImageResource(0);
 

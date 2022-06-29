@@ -7,9 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,14 +15,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.artmates.InfoActivity;
-import com.example.artmates.LandingPageActivity;
-import com.example.artmates.MainActivity;
+import com.example.artmates.activities.InfoActivity;
+import com.example.artmates.activities.LandingPageActivity;
 import com.example.artmates.Post;
-import com.example.artmates.PostAdapter;
-import com.example.artmates.ProfileAdapter;
+import com.example.artmates.adapters.ProfileAdapter;
 import com.example.artmates.R;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -46,6 +43,7 @@ public class ProfileFragment extends Fragment {
     private ImageButton btnLogout;
     private TextView tvUsername2;
     private Post post;
+    private ImageView imageView2;
 
 
     public ProfileFragment() {
@@ -72,6 +70,7 @@ public class ProfileFragment extends Fragment {
         btnInfo = view.findViewById(R.id.btnInfo);
         btnLogout = view.findViewById(R.id.btnLogout);
         tvUsername2 = view.findViewById(R.id.tvUsername2);
+        imageView2 = view.findViewById(R.id.imageView2);
 
 //        tvUsername2.setText(post.getUser().getUsername());
 
@@ -104,6 +103,8 @@ public class ProfileFragment extends Fragment {
                 }
             }
         });
+
+
     }
 
     protected void queryPosts() {

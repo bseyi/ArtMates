@@ -28,4 +28,12 @@
     <string name="description" />
     <string name="location">Location</string>
     <string name="google_maps_api_key">AIzaSyBZEPxmqm7pUFd0pC0_m0zICk4B0J1TpyI</string>
+    <string name="hint">Say anything</string>
+    <string name="profile_other">Other profile pic</string>
+    <string name="profile_me">My Profile Pic</string>
+    <string name="about">About my masterpiece</string>
+    <string name="date">Date Created:</string>
+    <string name="price">Price: $</string>
+    <string name="labels_text">LABELS SEEN IN IMAGE AND CONFIDENCE</string>
+
 </resources>

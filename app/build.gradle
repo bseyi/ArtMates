@@ -59,6 +59,12 @@ dependencies {
     implementation('org.tensorflow:tensorflow-lite-support:0.0.0-nightly') { changing = true }
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    implementation 'com.github.parse-community.Parse-SDK-Android:parse:4.0.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.7.2'
+    implementation 'com.github.parse-community:ParseLiveQuery-Android:1.2.2'
+
+//    implementation'com.github.yalantis:ucrop:2.2.2'
+
 //    implementation 'org.tensorflow:tensorflow-android:+'
 
 

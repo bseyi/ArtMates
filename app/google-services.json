@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "920775243314",
+    "project_id": "artmates-9b830",
+    "storage_bucket": "artmates-9b830.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:920775243314:android:2fe2a6155495b801f4ae2b",
+        "android_client_info": {
+          "package_name": "com.example.artmates"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "920775243314-7b6r3oh40crlv5jm5qhkjc4cdd00hba5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAeXXfT7wdN8MJjxGqDX7Tzd8leDg-boVI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "920775243314-7b6r3oh40crlv5jm5qhkjc4cdd00hba5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

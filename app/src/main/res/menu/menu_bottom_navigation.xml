@@ -5,15 +5,24 @@
     <item
         android:id="@+id/actionHome"
         android:icon="@drawable/instagram_home_outline_24"
-        app:showAsAction="always" />
+        app:showAsAction="always"
+        android:title="home" />
     <item
         android:id="@+id/actionCompose"
         android:icon="@drawable/instagram_new_post_outline_24"
-        app:showAsAction="always" />
+        app:showAsAction="always"
+        android:title="compose" />
 
+    <item
+        android:id="@+id/actionChat"
+        android:icon="@drawable/ic_baseline_groups_24"
+        android:title="chat"
+        app:showAsAction="always" />
     <item
         android:id="@+id/actionProfile"
         android:icon="@drawable/instagram_user_outline_24"
-        app:showAsAction="always" />
+        app:showAsAction="always"
+        android:title="profile" />
+
 
 </menu>
