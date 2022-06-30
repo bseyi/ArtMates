@@ -14,6 +14,11 @@
         android:title="compose" />
 
     <item
+        android:id="@+id/actionLocation"
+        android:icon="@drawable/ic_baseline_location_on_24"
+        android:title="location"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/actionChat"
         android:icon="@drawable/ic_baseline_groups_24"
         android:title="chat"

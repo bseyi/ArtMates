@@ -8,6 +8,7 @@ import com.parse.ParseUser;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 @ParseClassName("Post")
 public class Post extends ParseObject {
@@ -18,6 +19,11 @@ public class Post extends ParseObject {
     public static final String KEY_ABOUT_ART = "about_art";
     public static final String KEY_PRICE = "price";
     public static final String KEY_AVAILABLE_DATE = "available_date";
+    public static final String KEY_LABELS = "labels";
+
+    public String getLabels(){return getString(KEY_LABELS);};
+
+    public void setLabels(List<String> labels){put(KEY_LABELS, labels);}
 
     public String getDescription() {
         return getString(KEY_DESCRIPTION);

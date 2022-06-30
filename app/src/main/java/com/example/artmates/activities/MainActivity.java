@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import com.example.artmates.R;
 import com.example.artmates.fragments.ChatFragment;
 import com.example.artmates.fragments.ComposeFragment;
+import com.example.artmates.fragments.LocationFragment;
 import com.example.artmates.fragments.PostFragment;
 import com.example.artmates.fragments.ProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -36,6 +37,9 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.actionCompose:
                         fragment = new ComposeFragment();
+                        break;
+                    case R.id.actionLocation:
+                        fragment = new LocationFragment();
                         break;
                     case R.id.actionChat:
                         fragment = new ChatFragment();

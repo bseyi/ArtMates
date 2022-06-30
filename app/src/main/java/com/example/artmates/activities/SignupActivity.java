@@ -2,11 +2,8 @@ package com.example.artmates.activities;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
-import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,22 +15,21 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.artmates.ImageClassifier;
+import com.bumptech.glide.Glide;
 import com.example.artmates.R;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class SignupActivity extends AppCompatActivity {
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 42;
@@ -50,10 +46,7 @@ public class SignupActivity extends AppCompatActivity {
     private EditText etFullName;
     private File photoFile;
     private static final int PICK_PHOTO_CODE = 1042;
-//    private Context context;
     private String photoFileName = "photo.jpg";
-//    static final String USER_ID_KEY = "userId";
-//    static final String BODY_KEY = "body";
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,6 +91,10 @@ public class SignupActivity extends AppCompatActivity {
                 String password = etNewPassword.getText().toString();
                 String email = etEmail.getText().toString();
                 String fullName = etFullName.getText().toString();
+
+                ParseFile profileImage = new ParseFile(photoFile, "profilePicture.png");
+                photoFile = getPhotoFileUri(photoFileName);
+
                 signUpUser(username, password, email, fullName);
             }
         });
@@ -184,11 +181,23 @@ public class SignupActivity extends AppCompatActivity {
         user.setEmail(email);
         user.put("fullName", fullName);
 
+//        user.put("profilePicture", profileImage);
+//        ParseUser.getCurrentUser().saveInBackground(e -> {
+//            if(e == null) {
+//                Log.i(TAG, "Upload profile.");
+//                Toast.makeText(SignupActivity.this, "Uploaded profile picture.", Toast.LENGTH_SHORT).show();
+//            } else {
+//                Log.e(TAG, "Failed to upload picture.", e);
+//            }
+//        });
+
+
         user.signUpInBackground(new SignUpCallback() {
             @Override
             public void done(ParseException e) {
                 if(e == null) {
                     Toast.makeText(SignupActivity.this, "Success signing up", Toast.LENGTH_SHORT).show();
+
                     goToLoginActivity();
                 }
                 else{

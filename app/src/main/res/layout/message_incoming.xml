@@ -42,4 +42,5 @@
         android:text="Someone else's message"
         android:textColor="@android:color/black"
         android:textSize="18dp" />
+
 </RelativeLayout>
