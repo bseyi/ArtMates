@@ -31,6 +31,7 @@
         <entry key="app/src/main/res/layout/custom_grid.xml" value="0.375" />
         <entry key="app/src/main/res/layout/fragment_chat.xml" value="0.45742753623188404" />
         <entry key="app/src/main/res/layout/fragment_compose.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/fragment_location.xml" value="0.4936102236421725" />
         <entry key="app/src/main/res/layout/fragment_map.xml" value="0.5760416666666667" />
         <entry key="app/src/main/res/layout/fragment_posts.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.21414538310412573" />

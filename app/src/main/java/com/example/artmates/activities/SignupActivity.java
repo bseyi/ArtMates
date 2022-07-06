@@ -47,6 +47,7 @@ public class SignupActivity extends AppCompatActivity {
     private File photoFile;
     private static final int PICK_PHOTO_CODE = 1042;
     private String photoFileName = "photo.jpg";
+    private static final String contentType = "profilePicture.png";
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,7 +93,7 @@ public class SignupActivity extends AppCompatActivity {
                 String email = etEmail.getText().toString();
                 String fullName = etFullName.getText().toString();
 
-                ParseFile profileImage = new ParseFile(photoFile, "profilePicture.png");
+                ParseFile profileImage = new ParseFile(photoFile, contentType);
                 photoFile = getPhotoFileUri(photoFileName);
 
                 signUpUser(username, password, email, fullName);
@@ -106,7 +107,7 @@ public class SignupActivity extends AppCompatActivity {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         photoFile = getPhotoFileUri(photoFileName);
 
-        Uri fileProvider = FileProvider.getUriForFile(SignupActivity.this, "com.codepath.fileprovider.artmates", photoFile);
+        Uri fileProvider = FileProvider.getUriForFile(SignupActivity.this, "com.example.fileprovider.artmates", photoFile);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider);
 
         if (intent.resolveActivity(SignupActivity.this.getPackageManager()) != null) {
@@ -148,7 +149,6 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     public void onPickPhoto(View view) {
-        // Create intent for picking a photo from the gallery
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
         startActivityForResult(intent, PICK_PHOTO_CODE);
@@ -157,13 +157,10 @@ public class SignupActivity extends AppCompatActivity {
     public Bitmap loadFromUri(Uri photoUri) {
         Bitmap image = null;
         try {
-            // check version of Android on device
             if(Build.VERSION.SDK_INT > 27){
-                // on newer versions of Android, use the new decodeBitmap method
                 ImageDecoder.Source source = ImageDecoder.createSource(this.getContentResolver(), photoUri);
                 image = ImageDecoder.decodeBitmap(source);
             } else {
-                // support older versions of Android by using getBitmap
                 image = MediaStore.Images.Media.getBitmap(this.getContentResolver(), photoUri);
             }
         } catch (IOException e) {

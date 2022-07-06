@@ -72,7 +72,6 @@ public class ImageClassifier {
         inputImageBuffer = loadImage(bitmap, sensorOrientation);
         tensorClassifier.run(inputImageBuffer.getBuffer(), probabilityImageBuffer.getBuffer().rewind());
 
-        // Gets the map of label and probability.
         Map<String, Float> labelledProbability = new TensorLabel(labels,
                 probabilityProcessor.process(probabilityImageBuffer)).getMapWithFloatValue();
 
@@ -80,15 +79,12 @@ public class ImageClassifier {
             recognitions.add(new Recognition(entry.getKey(), entry.getValue()));
         }
 
-        // Find the best classifications by sorting predicitons based on confidence
         Collections.sort(recognitions);
-        // returning top 5 predicitons
         return recognitions.subList(0, MAX_SIZE);
     }
 
 
     private TensorImage loadImage(Bitmap bitmap, int sensorOrientation) {
-        // Loads bitmap into a TensorImage.
         bitmap = bitmap.copy(Bitmap.Config.ARGB_8888,true) ;
 
         inputImageBuffer.load(bitmap);
@@ -96,8 +92,6 @@ public class ImageClassifier {
         int noOfRotations = sensorOrientation / 90;
         int cropSize = Math.min(bitmap.getWidth(), bitmap.getHeight());
 
-        // Creates processor for the TensorImage.
-        // pre processing steps are applied here
         ImageProcessor imageProcessor = new ImageProcessor.Builder()
                 .add(new ResizeWithCropOrPadOp(cropSize, cropSize))
                 .add(new ResizeOp(imageResizeX, imageResizeY, ResizeOp.ResizeMethod.NEAREST_NEIGHBOR))

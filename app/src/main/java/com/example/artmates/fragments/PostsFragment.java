@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class PostFragment extends Fragment {
+public class PostsFragment extends Fragment {
 
     private static final String TAG = "PostsFragment";
     private static final int POST_LIMIT = 20;
@@ -38,7 +38,7 @@ public class PostFragment extends Fragment {
     private List<Post> allPosts;
     private SwipeRefreshLayout swipeContainer;
 
-    public PostFragment() {
+    public PostsFragment() {
     }
 
     @Override
@@ -82,20 +82,14 @@ public class PostFragment extends Fragment {
         swipeContainer.setRefreshing(false);
     }
 
-    protected void queryPosts() {
-        // specify what type of data we want to query - Post.class
+    private void queryPosts() {
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
-        // include data referred by user key
         query.include(Post.KEY_USER);
-        // limit query to latest 20 items
         query.setLimit(POST_LIMIT);
-        // order posts by creation date (newest first)
         query.addDescendingOrder(Post.KEY_CREATED_AT);
-        // start an asynchronous call for posts
         query.findInBackground(new FindCallback<Post>() {
             @Override
             public void done(List<Post> posts, ParseException e) {
-                // check for errors
                 if (e != null) {
                     Log.e(TAG, "Issue with getting posts", e);
                     return;
@@ -105,7 +99,6 @@ public class PostFragment extends Fragment {
                     Log.i(TAG, "Post: " + post.getDescription() + ", username: " + post.getUser().getUsername());
                 }
 
-                // save received posts to list and notify adapter of new data
                 adapter.addAll(posts);
                 adapter.notifyDataSetChanged();
             }
@@ -113,15 +106,10 @@ public class PostFragment extends Fragment {
     }
 
     private void queryPostsNewest() {
-        // specify what type of data we want to query - Post.class
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
-        // include data referred by user key
         query.include(Post.KEY_USER);
-        // limit query to latest 20 items
         query.setLimit(POST_LIMIT);
-        // order posts by creation date (newest first)
         query.addDescendingOrder("createdAt");
-        // start an asynchronous call for posts
         query.findInBackground(new FindCallback<Post>() {
             @Override
             public void done(List<Post> posts, ParseException e) {
@@ -135,26 +123,19 @@ public class PostFragment extends Fragment {
                     Log.i(TAG, "Post: " + post.getDescription() + ", username: " + post.getUser().getUsername());
                 }
 
-                // save received posts to list and notify adapter of new data
                 adapter.addAll(posts);
             }
         });
     }
 
     private void queryPostsOldest() {
-        // specify what type of data we want to query - Post.class
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
-        // include data referred by user key
         query.include(Post.KEY_USER);
-        // limit query to latest 20 items
         query.setLimit(POST_LIMIT);
-        // order posts by creation date (newest first)
         query.addAscendingOrder("createdAt");
-        // start an asynchronous call for posts
         query.findInBackground(new FindCallback<Post>() {
             @Override
             public void done(List<Post> posts, ParseException e) {
-                // check for errors
                 if (e != null) {
                     Log.e(TAG, "Issue with getting posts", e);
                     return;
@@ -164,7 +145,6 @@ public class PostFragment extends Fragment {
                     Log.i(TAG, "Post: " + post.getDescription() + ", username: " + post.getUser().getUsername());
                 }
 
-                // save received posts to list and notify adapter of new data
                 adapter.addAll(posts);
             }
         });

@@ -3,7 +3,6 @@
     <string name="ForgotPassword" />
     <string name="login">Login</string>
     <string name="forgot_password">Forgot Password</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="Signup" />
     <string name="login2">Log in</string>
@@ -27,13 +26,13 @@
     <string name="TimeStamp" />
     <string name="description" />
     <string name="location">Location</string>
-    <string name="google_maps_api_key">AIzaSyBZEPxmqm7pUFd0pC0_m0zICk4B0J1TpyI</string>
     <string name="hint">Say anything</string>
     <string name="profile_other">Other profile pic</string>
     <string name="profile_me">My Profile Pic</string>
     <string name="about">About my masterpiece</string>
     <string name="date">Date Created:</string>
     <string name="price">Price: $</string>
+    <string name="google_maps_key" templateMergeStrategy = "preserve" translatable="false">AIzaSyA6Yjy6kJk0XcpbwvHcamIm3sJnAPwpHDU</string>
     <string name="labels_text">LABELS SEEN IN IMAGE AND CONFIDENCE</string>
 
 </resources>

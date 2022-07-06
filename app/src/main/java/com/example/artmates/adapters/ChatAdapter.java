@@ -99,16 +99,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
 //                    .into(imageOther);
             body.setText(message.getBody());
             name.setText(message.getUserId());
-//            name.setText(ParseUser.getCurrentUser().getString("fullName"));
 
-//            String username = name.getText().toString();
-//
-//            ParseUser user = new ParseUser();
-//            user.put("username", username);
-//            name.setText(posts.get(0).getUser().getUsername());
-//
-//
-////            ParseUser user = message.
 
         }
     }

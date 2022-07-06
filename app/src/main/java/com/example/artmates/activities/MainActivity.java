@@ -12,7 +12,7 @@ import com.example.artmates.R;
 import com.example.artmates.fragments.ChatFragment;
 import com.example.artmates.fragments.ComposeFragment;
 import com.example.artmates.fragments.LocationFragment;
-import com.example.artmates.fragments.PostFragment;
+import com.example.artmates.fragments.PostsFragment;
 import com.example.artmates.fragments.ProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
                 Fragment fragment;
                 switch (menuItem.getItemId()) {
                     case R.id.actionHome:
-                        fragment = new PostFragment();
+                        fragment = new PostsFragment();
 
                         break;
                     case R.id.actionCompose:

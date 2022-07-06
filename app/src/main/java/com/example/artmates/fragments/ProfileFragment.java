@@ -72,7 +72,6 @@ public class ProfileFragment extends Fragment {
         tvUsername2 = view.findViewById(R.id.tvUsername2);
         imageView2 = view.findViewById(R.id.imageView2);
 
-//        tvUsername2.setText(post.getUser().getUsername());
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3);
         rvProfile.setLayoutManager(gridLayoutManager);
@@ -107,21 +106,15 @@ public class ProfileFragment extends Fragment {
 
     }
 
-    protected void queryPosts() {
-        // specify what type of data we want to query - Post.class
+    private void queryPosts() {
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
         query.whereEqualTo(Post.KEY_USER, ParseUser.getCurrentUser());
-        // include data referred by user key
         query.include(Post.KEY_USER);
-        // limit query to latest 20 items
         query.setLimit(POST_LIMIT);
-        // order posts by creation date (newest first)
         query.addDescendingOrder(Post.KEY_CREATED_AT);
-        // start an asynchronous call for posts
         query.findInBackground(new FindCallback<Post>() {
             @Override
             public void done(List<Post> posts, ParseException e) {
-                // check for errors
                 if (e != null) {
                     Log.e(TAG, "Issue with getting posts", e);
                     return;
@@ -133,7 +126,6 @@ public class ProfileFragment extends Fragment {
 
                 tvUsername2.setText(posts.get(0).getUser().getUsername());
 
-                // save received posts to list and notify adapter of new data
                 adapter.addAll(posts);
                 adapter.notifyDataSetChanged();
             }

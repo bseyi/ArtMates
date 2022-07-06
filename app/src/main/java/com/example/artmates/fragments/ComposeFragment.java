@@ -42,6 +42,7 @@ import com.example.artmates.ImageClassifier;
 import com.example.artmates.activities.MainActivity;
 import com.example.artmates.Post;
 import com.example.artmates.R;
+import com.github.drjacky.imagepicker.ImagePicker;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
@@ -78,7 +79,7 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 1000;
     private static final int CAMERA_REQUEST_CODE = 10001;
     private ListView lvLabels;
-    private List<String> labels;
+    private String labels = " ";
     final List<String> predictionsList = new ArrayList<>();
 
 
@@ -86,61 +87,12 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
 
 
     public ComposeFragment() {
-        // Required empty public constructor
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_compose, container, false);
-
-//        resultLauncher = registerForActivityResult(
-//                new ActivityResultContracts.GetContent(),
-//                new ActivityResultCallback<Uri>() {
-//
-//                    @Override
-//                    public void onActivityResult(Uri result) {
-//                        if (result != null) {
-////                            Glide.with(getContext())
-////                                    .load(result)
-////                                    .circleCrop()
-////                                    .into(ivProfilePicture);
-//
-//
-//                            Bitmap selectedImageBitmap;
-//                            try {
-//                                ImageDecoder.Source source = ImageDecoder.createSource(getContext().getContentResolver(), result);
-//                                selectedImageBitmap = ImageDecoder.decodeBitmap(source);
-//                            }
-//                            catch (IOException e) {
-//                                e.printStackTrace();
-//                                return;
-//                            }
-//
-//                            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-//                            selectedImageBitmap.compress(Bitmap.CompressFormat.PNG, 20, outputStream);
-//                            byte[] image = outputStream.toByteArray();
-//
-//
-//                            ParseFile profileImage = new ParseFile("profilePicture.png", image);
-//
-//                            ParseUser.getCurrentUser().put("profilePicture", profileImage);
-//                            ParseUser.getCurrentUser().saveInBackground(e -> {
-//                                if(e == null) {
-//                                    Log.i(TAG, "Updated profile.");
-//                                    Toast.makeText(getActivity(), "Updated profile picture.", Toast.LENGTH_SHORT).show();
-//                                } else {
-//                                    Log.e(TAG, "Failed to update profile.", e);
-//                                }
-//                            });
-
-//                        } else { // Result was a failure
-//                            Toast.makeText(getActivity(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
-//                        }
-//                    }
-//                });
-
     }
 
     @Override
@@ -162,7 +114,6 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
         } catch (IOException e) {
             Log.e("Image Classifier Error", "ERROR: " + e);
         }
-//        ivProfileImage2 = view.findViewById(R.id.ivProfileImage2);
 
 
         btnTakePhoto2.setOnClickListener(new View.OnClickListener() {
@@ -206,7 +157,6 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
                     return;
                 }
                 ParseUser currentUser = ParseUser.getCurrentUser();
-                labels = predictionsList;
                 savePost(description,aboutWork, location, date, currentUser, photoFile, labels);
             }
         });
@@ -244,11 +194,12 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
                         takenImage, 0);
 
 //                 creating a list of string to display in list view
-//                final List<String> predictionsList = new ArrayList<>();
                 for (ImageClassifier.Recognition recog : predicitons) {
                     predictionsList.add(recog.getName() + "  ::::::::::  " + recog.getConfidence());
+                    if (recog.getName() != null) {
+                        labels = labels + " " + recog.getName();
+                    }
                 }
-
 //                 creating an array adapter to display the classification result in list view
                 ArrayAdapter<String> predictionsAdapter = new ArrayAdapter<>(
                         getContext(), androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, predictionsList);
@@ -258,7 +209,7 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
                 Toast.makeText(getContext(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
             }
         }
-         else if ((data != null) && requestCode == PICK_PHOTO_CODE) {
+        if ((data != null) && requestCode == PICK_PHOTO_CODE) {
             Uri photoUri = data.getData();
 
             Bitmap selectedImage = loadFromUri(photoUri);
@@ -269,13 +220,11 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
             List<ImageClassifier.Recognition> predicitons = imageClassifier.recognizeImage(
                     selectedImage, 0);
 
-            // creating a list of string to display in list view
-            final List<String> predictionsList = new ArrayList<>();
             for (ImageClassifier.Recognition recog : predicitons) {
                 predictionsList.add(recog.getName() + "  ::::::::::  " + recog.getConfidence());
+
             }
 
-            // creating an array adapter to display the classification result in list view
             ArrayAdapter<String> predictionsAdapter = new ArrayAdapter<>(
                     getContext(), androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, predictionsList);
             lvLabels.setAdapter(predictionsAdapter);
@@ -293,7 +242,6 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
     }
 
     public void onPickPhoto(View view) {
-        // Create intent for picking a photo from the gallery
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         photoFile = getPhotoFileUri(photoFileName);
 
@@ -301,7 +249,6 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider);
 
         if (intent.resolveActivity(getContext().getPackageManager()) != null) {
-            // Bring up gallery to select a photo
             startActivityForResult(intent, PICK_PHOTO_CODE);
         }
     }
@@ -322,13 +269,11 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
     }
 
     public Bitmap rotateBitmapOrientation(String photoFilePath) {
-        // Create and configure BitmapFactory
         BitmapFactory.Options bounds = new BitmapFactory.Options();
         bounds.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(photoFilePath, bounds);
         BitmapFactory.Options opts = new BitmapFactory.Options();
         Bitmap bm = BitmapFactory.decodeFile(photoFilePath, opts);
-        // Read EXIF Data
         ExifInterface exif = null;
         try {
             exif = new ExifInterface(photoFilePath);
@@ -349,7 +294,7 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
         return rotatedBitmap;
     }
 
-    private void savePost(String description,String aboutArt,String location, String date, ParseUser currentUser, File photoFile, List<String> labels) {
+    private void savePost(String description,String aboutArt,String location, String date, ParseUser currentUser, File photoFile, String labels) {
         Post post = new Post();
         post.setDescription(description);
         post.setLocation(location);

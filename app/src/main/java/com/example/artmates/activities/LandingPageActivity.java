@@ -14,6 +14,7 @@ import com.example.artmates.R;
 import com.example.artmates.activities.LoginActivity;
 import com.example.artmates.activities.MainActivity;
 import com.example.artmates.activities.SignupActivity;
+import com.parse.ParseUser;
 
 public class LandingPageActivity extends AppCompatActivity {
     private Button btnLogin;
@@ -25,9 +26,9 @@ public class LandingPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_landing_page);
 
-//        if(ParseUser.getCurrentUser() != null) {
-//            goMainActivity();
-//        }
+        if(ParseUser.getCurrentUser() != null) {
+            goMainActivity();
+        }
         icon = findViewById(R.id.icon);
         btnLogin = findViewById(R.id.btnLogin);
         btnSignUp = findViewById(R.id.btnSignUp);

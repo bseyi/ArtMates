@@ -92,7 +92,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> im
                 }
             });
 
-            // Bind the post data to the view elements
             tvDescription.setText(post.getDescription());
             tvUsername.setText(post.getUser().getUsername());
             tvLocation.setText(post.getLocation());
@@ -216,18 +215,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> im
 
             List<Post> filteredList = new ArrayList<>();
             if (constraint == null || constraint.length() == 0) {
-                //If the user does not enter anything, display the whole list
                 filteredList.addAll(posts);
             } else {
-                //toLowercase makes it so that the search is not case sensitive
-                //trim takes away extra whitespaces
+
                 String filterPattern = constraint.toString().toLowerCase().trim();
 
-                //iterate to see which post matched filterPattern
                 for (Post post : posts) {
-                    if (post.getLocation().toLowerCase().contains(filterPattern)) {
+                    Log.i("PostAdapter", "Labels = " + post.getLabels());
+
+                    if (post.getLabels().toLowerCase().contains(filterPattern)) {
                         filteredList.add(post);
                     }
+
                 }
             }
 

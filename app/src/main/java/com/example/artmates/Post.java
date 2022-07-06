@@ -19,11 +19,11 @@ public class Post extends ParseObject {
     public static final String KEY_ABOUT_ART = "about_art";
     public static final String KEY_PRICE = "price";
     public static final String KEY_AVAILABLE_DATE = "available_date";
-    public static final String KEY_LABELS = "labels";
+    public static final String KEY_LABELS = "labels1";
 
     public String getLabels(){return getString(KEY_LABELS);};
 
-    public void setLabels(List<String> labels){put(KEY_LABELS, labels);}
+    public void setLabels(String labels){put(KEY_LABELS, labels);}
 
     public String getDescription() {
         return getString(KEY_DESCRIPTION);

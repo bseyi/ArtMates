@@ -15,9 +15,7 @@ public class ParseApplication extends Application {
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
-        // Can be Level.BASIC, Level.HEADERS, or Level.BODY
         httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        // any network interceptors must be added with the Configuration Builder given this syntax
         builder.networkInterceptors().add(httpLoggingInterceptor);
 
         Parse.initialize(new Parse.Configuration.Builder(this)

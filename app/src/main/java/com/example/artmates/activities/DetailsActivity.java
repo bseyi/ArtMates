@@ -96,19 +96,6 @@ public class DetailsActivity extends AppCompatActivity implements DatePickerDial
         }
 
 
-
-//        final List<String> predicitonsList = new ArrayList<>();
-//        for (ImageClassifier.Recognition recog : predicitons) {
-//            predicitonsList.add(recog.getName() + "  ::::::::::  " + recog.getConfidence());
-//        }
-//        predicitonsList.add("test 1");
-//        predicitonsList.add("test 2");
-//        predicitonsList.add("test 3");
-//
-//        ArrayAdapter<String> predictionsAdapter = new ArrayAdapter<>(
-//                this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, predicitonsList);
-//        lvLabels.setAdapter(predictionsAdapter);
-
         ParseFile profileImg = (ParseFile) postUser.get("profileImage");
         if (profilePic != null) {
             // Glide.with(this).load(profileImg.getUrl()).circleCrop().into(profilePic);
