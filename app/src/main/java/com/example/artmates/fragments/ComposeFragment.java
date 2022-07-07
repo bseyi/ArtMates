@@ -200,7 +200,31 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
             Bitmap selectedImage = loadFromUri(photoUri);
             LabelSave(selectedImage);
 
-            
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            selectedImage.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
+            byte[] bitMapData = bos.toByteArray();
+
+            FileOutputStream fos = null;
+            try {
+                fos = new FileOutputStream(photoFile);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            try {
+                fos.write(bitMapData);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                fos.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
