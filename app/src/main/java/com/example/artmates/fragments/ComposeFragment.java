@@ -7,14 +7,10 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageDecoder;
-import android.graphics.Matrix;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
@@ -36,13 +32,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.example.artmates.DatePicker;
 import com.example.artmates.ImageClassifier;
 import com.example.artmates.activities.MainActivity;
 import com.example.artmates.Post;
 import com.example.artmates.R;
-import com.github.drjacky.imagepicker.ImagePicker;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
@@ -50,6 +44,8 @@ import com.parse.SaveCallback;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -76,8 +72,6 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
     private ImageButton ibDate;
     public static final int PICK_PHOTO_CODE = 1042;
     private ImageClassifier imageClassifier;
-    private static final int CAMERA_PERMISSION_REQUEST_CODE = 1000;
-    private static final int CAMERA_REQUEST_CODE = 10001;
     private ListView lvLabels;
     private String labels = " ";
     final List<String> predictionsList = new ArrayList<>();
@@ -171,11 +165,11 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
         });
     }
 
-    private void launchCamera() {
+    private void  launchCamera() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         photoFile = getPhotoFileUri(photoFileName);
 
-        Uri fileProvider = FileProvider.getUriForFile(getContext(), "com.codepath.fileprovider.artmates", photoFile);
+        Uri fileProvider = FileProvider.getUriForFile(getContext(), "com.example.fileprovider.artmates", photoFile);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider);
 
         if (intent.resolveActivity(getContext().getPackageManager()) != null) {
@@ -189,45 +183,24 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
-                ivPostImage.setImageBitmap(takenImage);
-                List<ImageClassifier.Recognition> predicitons = imageClassifier.recognizeImage(
-                        takenImage, 0);
-
-//                 creating a list of string to display in list view
-                for (ImageClassifier.Recognition recog : predicitons) {
-                    predictionsList.add(recog.getName() + "  ::::::::::  " + recog.getConfidence());
-                    if (recog.getName() != null) {
-                        labels = labels + " " + recog.getName();
-                    }
-                }
-//                 creating an array adapter to display the classification result in list view
-                ArrayAdapter<String> predictionsAdapter = new ArrayAdapter<>(
-                        getContext(), androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, predictionsList);
-                lvLabels.setAdapter(predictionsAdapter);
+                LabelSave(takenImage);
             }
             else {
                 Toast.makeText(getContext(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
             }
         }
-        if ((data != null) && requestCode == PICK_PHOTO_CODE) {
-            Uri photoUri = data.getData();
-
-            Bitmap selectedImage = loadFromUri(photoUri);
-
-            ivPostImage = getView().findViewById(R.id.ivPostImage);
-            ivPostImage.setImageBitmap(selectedImage);
-
-            List<ImageClassifier.Recognition> predicitons = imageClassifier.recognizeImage(
-                    selectedImage, 0);
-
-            for (ImageClassifier.Recognition recog : predicitons) {
-                predictionsList.add(recog.getName() + "  ::::::::::  " + recog.getConfidence());
-
+        else if ((data != null) && requestCode == PICK_PHOTO_CODE) {
+            File f = new File(getContext().getCacheDir(), photoFileName);
+            try {
+                f.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+            Uri photoUri = data.getData();
+            Bitmap selectedImage = loadFromUri(photoUri);
+            LabelSave(selectedImage);
 
-            ArrayAdapter<String> predictionsAdapter = new ArrayAdapter<>(
-                    getContext(), androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, predictionsList);
-            lvLabels.setAdapter(predictionsAdapter);
+            
         }
     }
 
@@ -242,11 +215,9 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
     }
 
     public void onPickPhoto(View view) {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         photoFile = getPhotoFileUri(photoFileName);
 
-        Uri fileProvider = FileProvider.getUriForFile(getContext(), "com.codepath.fileprovider.artmates", photoFile);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider);
 
         if (intent.resolveActivity(getContext().getPackageManager()) != null) {
             startActivityForResult(intent, PICK_PHOTO_CODE);
@@ -257,41 +228,15 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
         Bitmap image = null;
         try {
             if(Build.VERSION.SDK_INT > 27){
-                ImageDecoder.Source source = ImageDecoder.createSource(this.getContext().getContentResolver(), photoUri);
+                ImageDecoder.Source source = ImageDecoder.createSource(getActivity().getContentResolver(), photoUri);
                 image = ImageDecoder.decodeBitmap(source);
             } else {
-                image = MediaStore.Images.Media.getBitmap(this.getContext().getContentResolver(), photoUri);
+                image = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), photoUri);
             }
         } catch (IOException e) {
             Log.e(TAG, "Error loading image", e);
         }
         return image;
-    }
-
-    public Bitmap rotateBitmapOrientation(String photoFilePath) {
-        BitmapFactory.Options bounds = new BitmapFactory.Options();
-        bounds.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(photoFilePath, bounds);
-        BitmapFactory.Options opts = new BitmapFactory.Options();
-        Bitmap bm = BitmapFactory.decodeFile(photoFilePath, opts);
-        ExifInterface exif = null;
-        try {
-            exif = new ExifInterface(photoFilePath);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        String orientString = exif.getAttribute(ExifInterface.TAG_ORIENTATION);
-        int orientation = orientString != null ? Integer.parseInt(orientString) : ExifInterface.ORIENTATION_NORMAL;
-        int rotationAngle = 0;
-        if (orientation == ExifInterface.ORIENTATION_ROTATE_90) rotationAngle = 90;
-        if (orientation == ExifInterface.ORIENTATION_ROTATE_180) rotationAngle = 180;
-        if (orientation == ExifInterface.ORIENTATION_ROTATE_270) rotationAngle = 270;
-        // Rotate Bitmap
-        Matrix matrix = new Matrix();
-        matrix.setRotate(rotationAngle, (float) bm.getWidth() / 2, (float) bm.getHeight() / 2);
-        Bitmap rotatedBitmap = Bitmap.createBitmap(bm, 0, 0, bounds.outWidth, bounds.outHeight, matrix, true);
-        // Return result
-        return rotatedBitmap;
     }
 
     private void savePost(String description,String aboutArt,String location, String date, ParseUser currentUser, File photoFile, String labels) {
@@ -337,6 +282,22 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
 
         String currentDateString = DateFormat.getDateInstance().format(calendar.getTime());
         availableDate.setText(currentDateString);
+    }
+
+    private void LabelSave(Bitmap takenImage){
+        ivPostImage.setImageBitmap(takenImage);
+        List<ImageClassifier.Recognition> predicitons = imageClassifier.recognizeImage(
+                takenImage, 0);
+
+        for (ImageClassifier.Recognition recog : predicitons) {
+            predictionsList.add(recog.getName() + "  ::::::::::  " + recog.getConfidence());
+            if (recog.getName() != null) {
+                labels = labels + " " + recog.getName();
+            }
+        }
+        ArrayAdapter<String> predictionsAdapter = new ArrayAdapter<>(
+                getContext(), androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, predictionsList);
+        lvLabels.setAdapter(predictionsAdapter);
     }
 
 
