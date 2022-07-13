@@ -48,6 +48,7 @@ import com.example.test.DatePicker;
 import com.example.test.ImageClassifier;
 import com.example.test.Post;
 import com.example.test.R;
+import com.example.test.activities.CanvasActivity;
 import com.example.test.activities.MainActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -78,6 +79,7 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
 
 
     private ImageView ivPostImage;
+    private Button btnCanvas;
     private Button btnTakePhoto2;
     private Button btnUploadPhoto2;
     private EditText tvCaption;
@@ -128,6 +130,7 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
         ibDate = view.findViewById(R.id.ibDate);
         lvLabels = view.findViewById(R.id.lvLabels);
         btnGetLocation = view.findViewById(R.id.btnGetLocation);
+        btnCanvas = view.findViewById(R.id.btnCanvas);
 
         client = LocationServices.getFusedLocationProviderClient(getActivity());
 
@@ -217,6 +220,14 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
                     requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION
                             , Manifest.permission.ACCESS_COARSE_LOCATION}, 100);
                 }
+            }
+        });
+
+        btnCanvas.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getContext(), CanvasActivity.class);
+                startActivity(i);
             }
         });
     }

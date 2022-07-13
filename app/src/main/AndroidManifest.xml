@@ -30,7 +30,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
-
+        <activity
+            android:name="com.example.test.activities.CanvasActivity"
+            android:exported="true" />
         <activity
             android:name="com.example.test.activities.InfoActivity"
             android:exported="false" />
@@ -60,7 +62,6 @@
         <activity
             android:name="com.example.test.activities.MainActivity"
             android:exported="false" />
-        <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

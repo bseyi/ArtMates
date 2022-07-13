@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -68,7 +67,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> im
         private TextView tvLocation;
         private ConstraintLayout postContainer;
         private ImageView profilePic;
-        private ImageButton likeButton;
+        private ImageView likeButton;
         private boolean clicked = true;
 
         public ViewHolder(@NonNull View itemView) {

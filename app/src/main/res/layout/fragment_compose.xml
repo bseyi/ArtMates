@@ -10,8 +10,8 @@
 
     <Button
         android:id="@+id/btnUploadPhoto2"
-        android:layout_width="151dp"
-        android:layout_height="54dp"
+        android:layout_width="149dp"
+        android:layout_height="44dp"
         android:layout_marginTop="4dp"
         android:text="Upload Photo"
         app:layout_constraintEnd_toEndOf="@+id/btnTakePhoto2"
@@ -23,7 +23,7 @@
         android:id="@+id/btnTakePhoto2"
         android:layout_width="149dp"
         android:layout_height="44dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:text="Take Photo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.299"
@@ -169,6 +169,18 @@
         app:layout_constraintEnd_toEndOf="@+id/btnSubmit"
         app:layout_constraintStart_toStartOf="@+id/btnSubmit"
         app:layout_constraintTop_toBottomOf="@+id/tvLocation2" />
+
+    <Button
+        android:id="@+id/btnCanvas"
+        android:layout_width="149dp"
+        android:layout_height="44dp"
+        android:layout_marginBottom="9dp"
+        android:text="Canvas"
+        app:layout_constraintBottom_toTopOf="@+id/tvCaption"
+        app:layout_constraintEnd_toEndOf="@+id/btnUploadPhoto2"
+        app:layout_constraintHorizontal_bias="0.777"
+        app:layout_constraintStart_toStartOf="@+id/btnUploadPhoto2"
+        app:layout_constraintTop_toBottomOf="@+id/btnUploadPhoto2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
