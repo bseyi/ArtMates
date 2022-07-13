@@ -12,6 +12,8 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
+import com.example.test.activities.CanvasActivity;
+
 import java.util.ArrayList;
 
 public class viewDisplay extends View {
@@ -35,6 +37,10 @@ public class viewDisplay extends View {
     {
         super(context, attrs);
         init();
+    }
+
+    public viewDisplay(Context context) {
+        super(context);
     }
 
     private void init()

@@ -98,16 +98,16 @@
 
         <ImageView
             android:id="@+id/done"
-            android:layout_width="66dp"
-            android:layout_height="92dp"
+            android:layout_width="50dp"
+            android:layout_height="77dp"
             android:layout_marginEnd="16dp"
+            android:clickable="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:clickable="true"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/main_redo_iv"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.459"
-            app:srcCompat="@drawable/ic_colorpicker_swatch_selected" />
+            app:srcCompat="@drawable/ic_baseline_save_24" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

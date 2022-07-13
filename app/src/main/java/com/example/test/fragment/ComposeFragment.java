@@ -283,8 +283,7 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
                         client.requestLocationUpdates(locationRequest
                                 , locationCallback, Looper.myLooper());
                     }
-//                    lat = location.getLatitude();
-//                    lon = location.getLongitude();
+
                 }
             });
         } else {
@@ -400,7 +399,6 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
         post.setImage(new ParseFile(photoFile));
         post.setUser(currentUser);
         post.setLabels(labels);
-//        post.setGeoLocation(currentUserLocation);
 
 
 

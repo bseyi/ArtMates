@@ -7,8 +7,12 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +28,13 @@ import com.example.test.viewDisplay;
 import org.xdty.preference.colorpicker.ColorPickerDialog;
 import org.xdty.preference.colorpicker.ColorPickerSwatch;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.UUID;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -35,6 +46,7 @@ public class CanvasActivity extends AppCompatActivity {
     @BindView(R.id.main_stroke_iv) ImageView mStrokeImageView;
     @BindView(R.id.main_undo_iv) ImageView mUndoImageView;
     @BindView(R.id.main_redo_iv) ImageView mRedoImageView;
+    @BindView(R.id.done) ImageView done;
 
     private int mCurrentBackgroundColor;
     private int mCurrentColor;
@@ -51,11 +63,50 @@ public class CanvasActivity extends AppCompatActivity {
 
         initDrawingView();
 
+        done.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveDrawing();
+            }
+        });
+
+    }
+
+    private void saveDrawing() {
+        AlertDialog.Builder saveDialog = new AlertDialog.Builder(this);
+        saveDialog.setTitle("Save?");
+        saveDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mDrawingView.setDrawingCacheEnabled(true);
+                String imgSaved = MediaStore.Images.Media.insertImage(
+                        getContentResolver(), mDrawingView.getDrawingCache(),
+                        UUID.randomUUID().toString()+".png", "drawing");
+                if(imgSaved!=null){
+                    Toast savedToast = Toast.makeText(getApplicationContext(),
+                            "Saved", Toast.LENGTH_LONG);
+                    savedToast.show();
+                }else {
+                    Toast unsaved = Toast.makeText(getApplicationContext(),
+                            "Oops, Error, Image not saved", Toast.LENGTH_LONG);
+                    unsaved.show();
+                }
+                mDrawingView.destroyDrawingCache();
+
+            }
+        });
+        saveDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        saveDialog.show();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_canvas, menu);
         return true;
     }
 
@@ -66,6 +117,7 @@ public class CanvasActivity extends AppCompatActivity {
         {
             case R.id.action_share:
                 requestPermissionsAndSaveBitmap();
+
                 break;
             case R.id.action_clear:
                 new AlertDialog.Builder(this)
@@ -177,14 +229,14 @@ public class CanvasActivity extends AppCompatActivity {
         startActivity(Intent.createChooser(intent, "Share Image"));
     }
 
-    private void requestPermissionsAndSaveBitmap()
-    {
-        if (PermissionManager.checkWriteStoragePermissions(this))
-        {
+    private void requestPermissionsAndSaveBitmap() {
+        if (PermissionManager.checkWriteStoragePermissions(this)) {
             Uri uri = FileManager.saveBitmap(this, mDrawingView.getBitmap());
+
             startShareDialog(uri);
         }
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
@@ -205,6 +257,9 @@ public class CanvasActivity extends AppCompatActivity {
             }
         }
     }
+
+
+
 
     @OnClick(R.id.main_fill_iv)
     public void onBackgroundFillOptionClick()
