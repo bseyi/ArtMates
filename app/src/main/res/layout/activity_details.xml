@@ -116,25 +116,5 @@
         app:layout_constraintTop_toBottomOf="@+id/divider"
         tools:srcCompat="@tools:sample/avatars" />
 
-    <!--    <ListView-->
-<!--        android:id="@+id/lvLabels"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="0dp"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/tvLabels" />-->
-<!--    <TextView-->
-<!--        android:id="@+id/tvLabels"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="20dp"-->
-<!--        android:text="LABELS SEEN IN IMAGE"-->
-<!--        android:textColor="@color/black"-->
-<!--        android:fontFamily="@font/open_sans_bold"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintHorizontal_bias="0.014"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/divider2" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

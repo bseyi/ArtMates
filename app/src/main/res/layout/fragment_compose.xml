@@ -5,13 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".fragments.ComposeFragment">
+    tools:context=".fragment.ComposeFragment">
 
 
     <Button
         android:id="@+id/btnUploadPhoto2"
-        android:layout_width="150dp"
-        android:layout_height="47dp"
+        android:layout_width="151dp"
+        android:layout_height="54dp"
         android:layout_marginTop="4dp"
         android:text="Upload Photo"
         app:layout_constraintEnd_toEndOf="@+id/btnTakePhoto2"
@@ -40,8 +40,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/instagram_user_outline_24"
-        tools:srcCompat="@drawable/instagram_user_outline_24" />
+        app:srcCompat="@color/black" />
 
     <Button
         android:id="@+id/btnSubmit"
@@ -71,7 +70,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ivPostImage" />
 
-    <EditText
+    <TextView
         android:id="@+id/tvLocation2"
         android:layout_width="match_parent"
         android:layout_height="40dp"
@@ -89,8 +88,8 @@
         android:id="@+id/etAboutWork"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="52dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="76dp"
         android:ems="10"
         android:fontFamily="@font/open_sans"
         android:hint="About"
@@ -106,16 +105,17 @@
         android:layout_marginTop="4dp"
         android:background="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.977"
         app:layout_constraintStart_toStartOf="@+id/availableDate"
         app:layout_constraintTop_toBottomOf="@+id/etAboutWork"
         app:srcCompat="@drawable/ic_baseline_calendar_today_24" />
 
     <TextView
         android:id="@+id/availableDate"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_width="339dp"
+        android:layout_height="32dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
         android:fontFamily="@font/open_sans"
@@ -139,24 +139,36 @@
 
     <ListView
         android:id="@+id/lvLabels"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+        app:layout_constraintTop_toBottomOf="@+id/textView6"
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/textView6"
         android:layout_width="0dp"
         android:layout_height="23dp"
+        android:layout_marginTop="4dp"
+        android:fontFamily="@font/open_sans_bold"
         android:text="@string/labels_text"
         android:textColor="@color/black"
-        android:fontFamily="@font/open_sans_bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.023"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider4" />
+
+    <Button
+        android:id="@+id/btnGetLocation"
+        android:layout_width="145dp"
+        android:layout_height="38dp"
+        android:text="Get Location"
+        app:layout_constraintEnd_toEndOf="@+id/btnSubmit"
+        app:layout_constraintStart_toStartOf="@+id/btnSubmit"
+        app:layout_constraintTop_toBottomOf="@+id/tvLocation2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -9,67 +9,85 @@
         android:id="@+id/etUsername"
         android:layout_width="340dp"
         android:layout_height="40dp"
-        android:layout_marginTop="180dp"
-        android:layout_marginEnd="28dp"
+        android:layout_marginTop="284dp"
         android:ems="10"
         android:fontFamily="@font/open_sans"
         android:hint="@string/enter_username2"
         android:inputType="textPersonName"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/btnLogin2"
-        android:layout_width="317dp"
+        android:layout_width="0dp"
         android:layout_height="50dp"
-        android:layout_marginTop="88dp"
-        android:layout_marginEnd="36dp"
+        android:layout_marginTop="216dp"
         android:background="@drawable/login_buttons"
         android:fontFamily="@font/open_sans_bold"
         android:text="@string/log_in"
         android:textAllCaps="false"
         android:textColor="@color/white"
         app:backgroundTint="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etPassword" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/textView2"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/etPassword"
+        app:layout_constraintTop_toBottomOf="@+id/etPassword"
+        app:layout_constraintVertical_bias="0.794" />
 
     <EditText
         android:id="@+id/etPassword"
         android:layout_width="340dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="28dp"
         android:ems="10"
         android:fontFamily="@font/open_sans"
         android:hint="@string/enter_password2"
         android:inputType="textPassword"
         android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/etUsername"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/etUsername"
         app:layout_constraintTop_toBottomOf="@+id/etUsername" />
 
     <TextView
         android:id="@+id/tvMinStay"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="180dp"
-        android:layout_marginBottom="104dp"
+        android:layout_width="59dp"
+        android:layout_height="27dp"
+        android:layout_marginBottom="252dp"
         android:fontFamily="@font/open_sans_bold"
         android:text="@string/login"
         android:textColor="@color/black"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/etUsername"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="@+id/btnLogin2"
+        app:layout_constraintHorizontal_bias="0.511"
+        app:layout_constraintStart_toStartOf="@+id/btnLogin2" />
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="28dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="4dp"
         android:fontFamily="@font/open_sans_bold"
         android:text="@string/forgot_password"
         android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/etPassword"
         app:layout_constraintTop_toBottomOf="@+id/etPassword" />
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="172dp"
+        android:layout_height="151dp"
+        android:layout_marginTop="36dp"
+        app:layout_constraintEnd_toEndOf="@+id/btnLogin2"
+        app:layout_constraintHorizontal_bias="0.517"
+        app:layout_constraintStart_toStartOf="@+id/btnLogin2"
+        app:layout_constraintTop_toBottomOf="@+id/tvMinStay"
+        app:srcCompat="@drawable/artmates" />
 </androidx.constraintlayout.widget.ConstraintLayout>

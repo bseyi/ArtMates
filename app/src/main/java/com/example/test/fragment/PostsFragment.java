@@ -124,6 +124,27 @@ public class PostsFragment extends Fragment {
             }
         });
     }
+    private void queryByMileRadius(){
+        ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        ParseGeoPoint userLocation = currentUser.getParseGeoPoint("Location");
+        query.whereNear("GeoLocation", userLocation);
+        query.setLimit(POST_LIMIT);
+
+        query.findInBackground(new FindCallback<Post>() {
+            @Override
+            public void done(List<Post> posts, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "Issue with getting posts", e);
+                    return;
+                }
+                adapter.addAll(posts);
+
+            }
+        });
+
+    }
+
 
     private void queryPostsOldest() {
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
@@ -145,26 +166,6 @@ public class PostsFragment extends Fragment {
                 adapter.addAll(posts);
             }
         });
-    }
-    private void queryByMileRadius(){
-        ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
-        ParseUser currentUser = ParseUser.getCurrentUser();
-        ParseGeoPoint userLocation = currentUser.getParseGeoPoint("Location");
-        query.whereNear("GeoLocation", userLocation);
-        query.setLimit(POST_LIMIT);
-
-        query.findInBackground(new FindCallback<Post>() {
-            @Override
-            public void done(List<Post> posts, ParseException e) {
-                if (e != null) {
-                    Log.e(TAG, "Issue with getting posts", e);
-                    return;
-                }
-                adapter.addAll(posts);
-
-            }
-        });
-
     }
 
     @Override

@@ -1,38 +1,28 @@
 <resources>
-    <string name="app_name">ArtMates</string>
-    <string name="ForgotPassword" />
-    <string name="login">Login</string>
-    <string name="forgot_password">Forgot Password</string>
+    <string name="app_name">Test</string>
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="Signup" />
-    <string name="login2">Log in</string>
-    <string name="welcome_to_artmates">Welcome to ArtMates</string>
-    <string name="sign_up">Sign up</string>
-    <string name="Email" />
-    <string name="Gender" />
-    <string name="Pronouns" />
-    <string name="Age" />
-    <string name="enter_username">Enter Username </string>
-    <string name="enter_email">Enter email</string>
-    <string name="enter_password">Enter password</string>
-    <string name="enter_pronouns">Enter Pronouns</string>
-    <string name="enter_age">Enter Age</string>
-    <string name="sign_up2">Sign Up</string>
-    <string name="create_account">Create Account</string>
-    <string name="have_an_account_sign_in">Have an account? Sign in</string>
-    <string name="enter_username2">Enter Username</string>
-    <string name="enter_password2">Enter Password</string>
-    <string name="log_in">Log in</string>
-    <string name="TimeStamp" />
-    <string name="description" />
-    <string name="location">Location</string>
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyA6Yjy6kJk0XcpbwvHcamIm3sJnAPwpHDU</string>
+    <string name="labels_text">LABELS SEEN IN IMAGE AND CONFIDENCE</string>
     <string name="hint">Say anything</string>
     <string name="profile_other">Other profile pic</string>
     <string name="profile_me">My Profile Pic</string>
+    <string name="enter_username2">Enter Username</string>
+    <string name="log_in">Log in</string>
+    <string name="enter_password2">Enter Password</string>
+    <string name="login">Login</string>
+    <string name="forgot_password">Forgot Password</string>
+    <string name="login2">Log in</string>
+    <string name="sign_up">Sign up</string>
+    <string name="welcome_to_artmates">Welcome to ArtMates</string>
+    <string name="enter_username">Enter Username</string>
+    <string name="enter_email">Enter Email</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="sign_up2">SIGN UP</string>
+    <string name="create_account">Create Account</string>
+    <string name="have_an_account">Have an Account?</string>
     <string name="about">About my masterpiece</string>
     <string name="date">Date Created:</string>
-    <string name="price">Price: $</string>
-    <string name="google_maps_key" templateMergeStrategy = "preserve" translatable="false">AIzaSyA6Yjy6kJk0XcpbwvHcamIm3sJnAPwpHDU</string>
-    <string name="labels_text">LABELS SEEN IN IMAGE AND CONFIDENCE</string>
+
 
 </resources>

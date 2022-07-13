@@ -8,21 +8,22 @@
         android:title="Search"
         app:actionViewClass="android.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView" />
+    <item
+        android:id="@+id/nearest_post"
+        android:title="Closest distance"/>
 
     <item
         android:id="@+id/newest"
-        android:icon="@drawable/direct"
-        android:title="Newest" />
+        android:title="Newest Post" />
     <item android:id="@+id/oldest"
-        android:title="Oldest" />
-    <item android:id="@+id/price_asc"
-        android:title="Lowest Price" />
-    <item android:id="@+id/price_dsc"
-        android:title="Highest price" />
-    <item android:id="@+id/early_date"
-        android:title="Earliest Available Date" />
-    <item android:id="@+id/late_date"
-        android:title="Latest Available Date" />
+        android:title="Oldest Post" />
+    <item
+        android:id="@+id/early_date"
+        android:title="Earliest Art Created" />
+    <item
+        android:id="@+id/late_date"
+        android:title="Latest Art Created" />
+
 </menu>
 
 
