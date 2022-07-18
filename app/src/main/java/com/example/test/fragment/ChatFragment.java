@@ -115,9 +115,9 @@ public class ChatFragment extends Fragment {
             public void onClick(View v) {
                 String data = etMessage.getText().toString();
                 Message message = new Message();
-                message.setUserId(ParseUser.getCurrentUser().getObjectId());
                 message.setBody(data);
-
+                message.setUser(ParseUser.getCurrentUser());
+                message.setUserId(ParseUser.getCurrentUser().getObjectId());
                 message.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
@@ -126,10 +126,14 @@ public class ChatFragment extends Fragment {
                                     Toast.LENGTH_SHORT).show();
                         } else {
                             Log.e(TAG, "Failed to save message", e);
+                            Toast.makeText(getActivity(), "Failed to save message",
+                                    Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
                 etMessage.setText(null);
+                refreshMessages();
+
             }
         });
     }

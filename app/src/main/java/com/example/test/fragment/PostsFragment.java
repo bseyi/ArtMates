@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.example.test.Post;
 import com.example.test.R;
@@ -83,23 +84,24 @@ public class PostsFragment extends Fragment {
         swipeContainer.setRefreshing(false);
     }
 
+    private final FindCallback<Post> mPostQueryCallback = new FindCallback<Post>() {
+        @Override
+        public void done(List<Post> posts, ParseException e) {
+            if (e != null) {
+                Log.e(TAG, "Issue with getting posts", e);
+                return;
+            }
+            adapter.addAll(posts);
+            adapter.notifyDataSetChanged();
+        }
+    };
+
     private void queryPosts() {
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
         query.include(Post.KEY_USER);
         query.setLimit(POST_LIMIT);
         query.addDescendingOrder(Post.KEY_CREATED_AT);
-        query.findInBackground(new FindCallback<Post>() {
-            @Override
-            public void done(List<Post> posts, ParseException e) {
-                if (e != null) {
-                    Log.e(TAG, "Issue with getting posts", e);
-                    return;
-                }
-
-                adapter.addAll(posts);
-                adapter.notifyDataSetChanged();
-            }
-        });
+        query.findInBackground(mPostQueryCallback);
     }
 
     private void queryPostsNewest() {
@@ -107,41 +109,19 @@ public class PostsFragment extends Fragment {
         query.include(Post.KEY_USER);
         query.setLimit(POST_LIMIT);
         query.addDescendingOrder(Post.KEY_CREATED_AT);
-        query.findInBackground(new FindCallback<Post>() {
-            @Override
-            public void done(List<Post> posts, ParseException e) {
-                // check for errors
-                if (e != null) {
-                    Log.e(TAG, "Issue with getting posts", e);
-                    return;
-                }
-
-                for (Post post : posts) {
-                    Log.i(TAG, "Post: " + post.getDescription() + ", username: " + post.getUser().getUsername());
-                }
-
-                adapter.addAll(posts);
-            }
-        });
+        query.findInBackground(mPostQueryCallback);
     }
     private void queryByMileRadius(){
+        Post post = new Post();
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
         ParseUser currentUser = ParseUser.getCurrentUser();
         ParseGeoPoint userLocation = currentUser.getParseGeoPoint("Location");
-        query.whereNear("GeoLocation", userLocation);
+        Log.i("Location", "Location is "+ userLocation);
+        post.setGeoLocation(userLocation);
+        query.whereNear(Post.KEY_GEOLOCATION, userLocation);
         query.setLimit(POST_LIMIT);
+        query.findInBackground(mPostQueryCallback);
 
-        query.findInBackground(new FindCallback<Post>() {
-            @Override
-            public void done(List<Post> posts, ParseException e) {
-                if (e != null) {
-                    Log.e(TAG, "Issue with getting posts", e);
-                    return;
-                }
-                adapter.addAll(posts);
-
-            }
-        });
 
     }
 
@@ -151,21 +131,8 @@ public class PostsFragment extends Fragment {
         query.include(Post.KEY_USER);
         query.setLimit(POST_LIMIT);
         query.addAscendingOrder(Post.KEY_CREATED_AT);
-        query.findInBackground(new FindCallback<Post>() {
-            @Override
-            public void done(List<Post> posts, ParseException e) {
-                if (e != null) {
-                    Log.e(TAG, "Issue with getting posts", e);
-                    return;
-                }
+        query.findInBackground(mPostQueryCallback);
 
-                for (Post post : posts) {
-                    Log.i(TAG, "Post: " + post.getDescription() + ", username: " + post.getUser().getUsername());
-                }
-
-                adapter.addAll(posts);
-            }
-        });
     }
 
     @Override
@@ -218,12 +185,12 @@ public class PostsFragment extends Fragment {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                adapter.getFilter().filter(query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                adapter.getFilter().filter(newText);
                 return false;
             }
         });

@@ -4,8 +4,20 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.media.ThumbnailUtils;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -14,16 +26,21 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import android.os.Parcel;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.test.JsonParser;
+import com.example.test.Post;
 import com.example.test.R;
+import com.example.test.activities.DetailsActivity;
 import com.example.test.activities.LoginActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -32,37 +49,57 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.parse.FindCallback;
+import com.parse.GetDataCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcels;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class LocationFragment extends Fragment {
+    private static final String TAG = "LocationFragment";
+    private final int MAX_RADIUS = 25000;
+    private final int MIN_RADIUS = 2000;
+    private final int VISIBILITY = 0;
+
+
     private Spinner spType;
     private Button btFind;
     private SupportMapFragment supportMapFragment;
     private GoogleMap map;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private double currentLat = 0, currentLong = 0;
-    private static final int REQUEST_LOCATION = 1;
-    private LocationManager locationManager;
+
+    private ImageButton btnUp;
+    private ImageButton btnDown;
+    private int radius = 10000;
+    private List<Marker> markers;
+    private LatLng midLatLng;
+    private Circle circle;
+
 
 
 
@@ -90,10 +127,12 @@ public class LocationFragment extends Fragment {
 
         spType = view.findViewById(R.id.sp_type);
         btFind = view.findViewById(R.id.bt_find);
+        btnUp = view.findViewById(R.id.btnUp);
+        btnDown = view.findViewById(R.id.btnDown);
         supportMapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.google_map);
 
-        String[] placeTypeList = {"location_of_all_users ","museum", "exhibition_centers"};
-        String[] placeNameList = {"Location of all users", "Museums close to you", "Exhibition Centers close to you"};
+        String[] placeTypeList = {"location_of_all_users ", "posts", "museum", "exhibition_centers"};
+        String[] placeNameList = {"Location of all users", "Posts", "Museums close to you", "Exhibition Centers close to you"};
 
         spType.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, placeNameList));
 
@@ -110,9 +149,16 @@ public class LocationFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 int i = spType.getSelectedItemPosition();
-                if (i == 0) {
+                if (i == 0){
                     map.clear();
                     getCurrentLocation();
+                }
+                else if (i == 1) {
+                    btnDown.setVisibility(VISIBILITY);
+                    btnUp.setVisibility(VISIBILITY);
+                    map.clear();
+                    showPosts(map);
+
                 }
                 else {
                     String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" +
@@ -126,6 +172,27 @@ public class LocationFragment extends Fragment {
                 }
             }
         });
+
+        btnUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(radius != MAX_RADIUS){
+                    radius = radius + 2000;
+                }
+                showPosts(map);
+            }
+        });
+
+        btnDown.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (radius != MIN_RADIUS){
+                    radius = radius - 2000;
+                }
+                showPosts(map);
+            }
+        });
+
     }
 
     private void getCurrentLocation() {
@@ -215,7 +282,7 @@ public class LocationFragment extends Fragment {
             JSONObject object = null;
             try {
                 object = new JSONObject(strings[0]);
-                mapList = jsonParser.ParseResult(object);
+                mapList = jsonParser.parseResult(object);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -277,8 +344,8 @@ public class LocationFragment extends Fragment {
                         if(!nearUsers.get(i).getObjectId().equals(users.getObjectId())) {
                             users = nearUsers.get(i);
                             showParseUserInMap(googleMap);
-                            LatLng UserLocation = new LatLng(users.getParseGeoPoint("Location").getLatitude(), users.getParseGeoPoint("Location").getLongitude());
-                            googleMap.addMarker(new MarkerOptions().position(UserLocation).title(users.getUsername()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                            LatLng userLocation = new LatLng(users.getParseGeoPoint("Location").getLatitude(), users.getParseGeoPoint("Location").getLongitude());
+                            googleMap.addMarker(new MarkerOptions().position(userLocation).title(users.getUsername()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
 
                         }
                     }
@@ -290,5 +357,180 @@ public class LocationFragment extends Fragment {
         ParseQuery.clearAllCachedResults();
     }
 
+
+    private void showPosts(final GoogleMap googleMap){
+        googleMap.clear();
+
+        ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        ParseGeoPoint userLocation = currentUser.getParseGeoPoint("Location");
+        LatLng userLoc = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
+        query.findInBackground(new FindCallback<Post>() {
+            @Override
+            public void done(List<Post> posts, ParseException e) {
+                if ( e != null){
+                    Log.e(TAG, "Issue with getting posts", e);
+                    return;
+                }
+                for (Post post : posts ){
+                    ParseGeoPoint postLocation = post.getGeoLocation();
+                    if (postLocation != null) {
+                        LatLng currentPost = new LatLng(postLocation.getLatitude(), postLocation.getLongitude());
+                        ParseFile image = post.getImage();
+                        image.getDataInBackground(new GetDataCallback() {
+                            @Override
+                            public void done(byte[] data, ParseException e) {
+                                if (e == null && data != null) {
+                                    Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+
+
+                                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                    bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+                                    final byte[] b = baos.toByteArray();
+
+                                    // thumbnail that will replace the marker icon
+                                    Bitmap thumbnail = ThumbnailUtils.extractThumbnail(getCroppedBitmap(bitmap), 200, 200);
+
+                                    if (isInMaxRadius(userLocation, postLocation, radius)){
+                                        Marker newMarker = googleMap.addMarker(new MarkerOptions()
+                                                .title("Posts")
+                                                .icon(BitmapDescriptorFactory.fromBitmap(thumbnail))
+                                                .position(currentPost)
+                                                .visible(true)
+                                        );
+
+                                        newMarker.setTag(post);
+                                    }
+                                    else{
+                                        Marker newMarker2 = googleMap.addMarker(new MarkerOptions()
+                                                .title("Posts")
+                                                .icon(BitmapDescriptorFactory.fromBitmap(thumbnail))
+                                                .position(currentPost)
+                                                .visible(false)
+                                        );
+                                        newMarker2.setTag(post);
+                                    }
+
+
+                                }
+                            }
+
+                        });
+
+                        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                            @Override
+                            public boolean onMarkerClick(@NonNull Marker marker) {
+                                Intent intent = new Intent(getContext(), DetailsActivity.class);
+                                marker.getTag();
+                                Post post = (Post) marker.getTag();
+                                Bundle bundle = new Bundle();
+                                intent.putExtra("posts", Parcels.wrap(post));
+                                startActivity(intent);
+                                return true;
+                            }
+                        });
+                    }
+                }
+                circle = googleMap.addCircle(new CircleOptions()
+                        .center(userLoc)
+                        .radius(radius)
+                        .strokeColor(Color.rgb(0, 136, 255))
+                        .fillColor(Color.argb(20, 0, 136, 255)));
+            }
+        });
+
+
+    }
+
+    private LatLng getLatLng(String location) {
+        LatLng latLng = null;
+        if (getContext() != null) {
+            Geocoder geocoder = new Geocoder(getContext());
+            List<Address> addressList;
+
+            try {
+                addressList = geocoder.getFromLocationName(location, 1);
+
+                if (addressList != null && addressList.size() != 0) {
+                    double lat = addressList.get(0).getLatitude();
+                    double lng = addressList.get(0).getLongitude();
+                    latLng = new LatLng(lat, lng);
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return latLng;
+    }
+
+    private boolean isInMaxRadius(ParseGeoPoint currentUser, ParseGeoPoint post, int radius) {
+        double distance = distance(currentUser.getLatitude(), currentUser.getLongitude(), post.getLatitude(), post.getLongitude());
+        if (distance > radius/2){
+            return false;
+        }
+        return true;
+    }
+
+    private double distance(double lat1, double lon1, double lat2, double lon2) {
+        double theta = lon1 - lon2;
+        double dist = Math.sin(deg2rad(lat1))
+                * Math.sin(deg2rad(lat2))
+                + Math.cos(deg2rad(lat1))
+                * Math.cos(deg2rad(lat2))
+                * Math.cos(deg2rad(theta));
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515;
+        dist = dist * 1000;
+        return (dist);
+    }
+
+    private double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+
+    private double rad2deg(double rad) {
+        return (rad * 180.0 / Math.PI);
+    }
+
+    public Bitmap getBitmapFromLink(String link) {
+        try {
+            URL url = new URL(link);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            try {
+                connection.connect();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public Bitmap getCroppedBitmap(Bitmap bitmap) {
+        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
+                bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+
+        final int color = 0xff424242;
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(color);
+
+        canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
+                bitmap.getWidth() / 2, paint);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+
+        return output;
+    }
 
 }

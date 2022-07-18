@@ -59,6 +59,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
@@ -83,10 +84,10 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
     private Button btnTakePhoto2;
     private Button btnUploadPhoto2;
     private EditText tvCaption;
-    private TextView tvLocation2;
+    private TextView tvLocation;
     private EditText etAboutWork;
     private TextView availableDate;
-    private String photoFileName = "photo.jpg";
+    private final String photoFileName = "photo.jpg";
     private File photoFile;
     private Button btnSubmit;
     private ImageButton ibDate;
@@ -96,12 +97,8 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
     private ListView lvLabels;
     private String labels = " ";
     private final List<String> predictionsList = new ArrayList<>();
-    private LocationManager locationManager;
     private FusedLocationProviderClient client;
     private static final String  AUTHORITY_NAME = "com.example.fileprovider.test";
-    private static final int REQUEST_LOCATION = 1;
-    private Location location2;
-    private FusedLocationProviderClient fusedLocationProviderClient;
 
 
 
@@ -123,7 +120,7 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
         btnTakePhoto2 = view.findViewById(R.id.btnTakePhoto2);
         btnUploadPhoto2 = view.findViewById(R.id.btnUploadPhoto2);
         tvCaption = view.findViewById(R.id.tvCaption);
-        tvLocation2 = view.findViewById(R.id.tvLocation2);
+        tvLocation = view.findViewById(R.id.tvLocation2);
         etAboutWork = view.findViewById(R.id.etAboutWork);
         availableDate = view.findViewById(R.id.availableDate);
         btnSubmit = view.findViewById(R.id.btnSubmit);
@@ -159,7 +156,7 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
             @Override
             public void onClick(View v) {
                 String description = tvCaption.getText().toString();
-                String location = tvLocation2.getText().toString();
+                String location = tvLocation.getText().toString();
                 String aboutWork = etAboutWork.getText().toString();
                 String date = availableDate.getText().toString();
                 if (description.isEmpty()) {
@@ -400,6 +397,8 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
         post.setUser(currentUser);
         post.setLabels(labels);
 
+        ParseGeoPoint userLocation = currentUser.getParseGeoPoint("Location");
+        post.setGeoLocation(userLocation);
 
 
         post.saveInBackground(new SaveCallback() {
@@ -410,7 +409,7 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
                     Toast.makeText(getContext(), "Error saving post", Toast.LENGTH_SHORT).show();
                 }
                 tvCaption.setText("");
-                tvLocation2.setText("");
+                tvLocation.setText("");
                 etAboutWork.setText("");
                 availableDate.setText("");
                 ivPostImage.setImageResource(0);
@@ -460,7 +459,7 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
             String city = addresses.get(0).getLocality();
             String state = addresses.get(0).getAdminArea();
 
-            tvLocation2.setText(city + ", " + state);
+            tvLocation.setText(city + ", " + state);
         }
 
     }

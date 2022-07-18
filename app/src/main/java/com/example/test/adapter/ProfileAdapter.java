@@ -21,6 +21,8 @@ import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
+import org.parceler.Parcels;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,7 +78,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
                     if (position != RecyclerView.NO_POSITION) {
                         Post post = posts.get(position);
                         Intent intent = new Intent(context, DetailsActivity.class);
-                        intent.putExtra("posts", post);
+                        intent.putExtra("posts", Parcels.wrap(post));
                         context.startActivity(intent);
                     }
 
@@ -92,7 +94,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
 
                     String objectId = post.getIdObject();
                     Log.i("Delete", "ObjectId is " + objectId);
-//                    deleteObject(objectId);
+                    deleteObject(objectId);
 
                     return true;
                 }

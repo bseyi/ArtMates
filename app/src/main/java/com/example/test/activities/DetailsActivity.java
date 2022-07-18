@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcel;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -13,6 +14,8 @@ import com.example.test.Post;
 import com.example.test.R;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
+
+import org.parceler.Parcels;
 
 import java.util.Date;
 
@@ -49,11 +52,10 @@ public class DetailsActivity extends AppCompatActivity {
         date = findViewById(R.id.date);
         imageView = findViewById(R.id.imageView);
 
+        Bundle bundle = getIntent().getExtras();
+        Post post = Parcels.unwrap(bundle.getParcelable("posts"));
 
-        post = getIntent().getParcelableExtra("posts");
-
-        Log.d("DetailsActivity", "User received = " + post.getDescription());
-
+        
         ParseUser postUser = post.getUser();
 
         ParseFile image = post.getImage();

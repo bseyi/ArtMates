@@ -62,81 +62,12 @@ public class SignupActivity extends AppCompatActivity {
                 String email = etEmail.getText().toString();
                 String fullName = etFullName.getText().toString();
 
-//                ParseFile profileImage = new ParseFile(photoFile, CONTENT_TYPE);
-//                photoFile = getPhotoFileUri(photoFileName);
-
                 signUpUser(username, password, email, fullName);
             }
         });
 
 
     }
-//
-//    private void launchCamera() {
-//        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//        photoFile = getPhotoFileUri(photoFileName);
-//
-//        Uri fileProvider = FileProvider.getUriForFile(SignupActivity.this, AUTHORITY_NAME, photoFile);
-//        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider);
-//
-//        if (intent.resolveActivity(SignupActivity.this.getPackageManager()) != null) {
-//            startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
-//        }
-//    }
-//
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
-//            if (resultCode == RESULT_OK) {
-//                Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
-////                ivProfileImage2.setImageBitmap(takenImage);
-//            }
-//            else {
-//                Toast.makeText(SignupActivity.this, "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//        if ((data != null) && requestCode == PICK_PHOTO_CODE) {
-//            Uri photoUri = data.getData();
-//
-//            Bitmap selectedImage = loadFromUri(photoUri);
-//
-//            ImageView ivPreview;
-//            ivPreview = findViewById(R.id.ivPostImage);
-//            ivPreview.setImageBitmap(selectedImage);
-//        }
-//    }
-//
-//    public File getPhotoFileUri(String fileName) {
-//        File mediaStorageDir = new File(SignupActivity.this.getExternalFilesDir(Environment.DIRECTORY_PICTURES), TAG);
-//        if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()){
-//            Log.d(TAG, "failed to create directory");
-//        }
-//
-//
-//        return new File(mediaStorageDir.getPath() + File.separator + fileName);
-//    }
-//
-//    public void onPickPhoto(View view) {
-//        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//
-//        startActivityForResult(intent, PICK_PHOTO_CODE);
-//    }
-//
-//    public Bitmap loadFromUri(Uri photoUri) {
-//        Bitmap image = null;
-//        try {
-//            if(Build.VERSION.SDK_INT > 27){
-//                ImageDecoder.Source source = ImageDecoder.createSource(this.getContentResolver(), photoUri);
-//                image = ImageDecoder.decodeBitmap(source);
-//            } else {
-//                image = MediaStore.Images.Media.getBitmap(this.getContentResolver(), photoUri);
-//            }
-//        } catch (IOException e) {
-//            Log.e(TAG, "Error loading image", e);
-//        }
-//        return image;
-//    }
 
     private void signUpUser(String username, String password, String email, String fullName) {
         Log.i(TAG, "Attempting to login user");

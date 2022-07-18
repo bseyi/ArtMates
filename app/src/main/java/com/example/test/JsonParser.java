@@ -41,7 +41,7 @@ public class JsonParser {
         return dataList;
     }
 
-    public List<HashMap<String,String>> ParseResult(JSONObject object){
+    public List<HashMap<String,String>> parseResult(JSONObject object){
         JSONArray jsonArray = null;
         try {
             jsonArray = object.getJSONArray("results");

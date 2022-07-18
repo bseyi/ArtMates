@@ -22,6 +22,8 @@ import com.example.test.R;
 import com.example.test.activities.DetailsActivity;
 import com.parse.ParseFile;
 
+import org.parceler.Parcels;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -109,7 +111,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> im
                     if (position != RecyclerView.NO_POSITION) {
                         Post post = posts.get(position);
                         Intent intent = new Intent(context, DetailsActivity.class);
-                        intent.putExtra("posts", post);
+                        intent.putExtra("posts", Parcels.wrap(post));
                         context.startActivity(intent);
                     }
                 }
@@ -226,8 +228,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> im
                 String filterPattern = constraint.toString().toLowerCase().trim();
 
                 for (Post post : posts) {
-                    Log.i("PostAdapter", "Labels = " + post.getLabels());
-
                     if (post.getLabels().toLowerCase().contains(filterPattern)) {
                         filteredList.add(post);
                     }

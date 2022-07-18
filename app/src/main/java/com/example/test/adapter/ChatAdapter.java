@@ -1,6 +1,7 @@
 package com.example.test.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,9 +11,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.test.Message;
 import com.example.test.Post;
 import com.example.test.R;
+import com.parse.ParseFile;
 import com.parse.ParseUser;
 
 import java.util.List;
@@ -93,10 +96,13 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
 
         @Override
         public void bindMessage(Message message) {
-            ParseUser user = ParseUser.getCurrentUser();
 
             body.setText(message.getBody());
-            name.setText(message.getUserId());
+            name.setText(message.getUser().getUsername());
+            ParseFile profileImg = (ParseFile) message.getUser().get("profilePicture");
+            if (profileImg != null) {
+                Glide.with(mContext).load(profileImg.getUrl()).circleCrop().into(imageOther);
+            }
 
 
         }
@@ -114,13 +120,30 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
 
         @Override
         public void bindMessage(Message message) {
+            if(ParseUser.getCurrentUser() != null)
+            {
+                ParseUser user = ParseUser.getCurrentUser();
+                if(user.getParseFile("profilePicture") != null){
+                    Glide.with(mContext)
+                            .load(user.getParseFile("profilePicture").getUrl())
+                            .circleCrop() // create an effect of a round profile picture
+                            .into(imageMe);
+                }
+
+            }
             body.setText(message.getBody());
         }
     }
 
     private boolean isMe(int position) {
         Message message = mMessages.get(position);
-        return mUserId.equals(message.getUserId());
+        Log.i("user", "user is " + message.getUserId() +" "+ "mUserId is " + mUserId);
+        if (mUserId.equals(message.getUserId())){
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
 
