@@ -1,7 +1,10 @@
 package com.example.test.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +20,8 @@ import com.bumptech.glide.Glide;
 import com.example.test.Post;
 import com.example.test.R;
 import com.example.test.activities.DetailsActivity;
+import com.parse.DeleteCallback;
+import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -25,6 +30,7 @@ import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHolder>{
     private Context context;
@@ -76,7 +82,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
                 public void onClick(View v) {
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
-                        Post post = posts.get(position);
+                        Post post = postsToDisplay.get(position);
                         Intent intent = new Intent(context, DetailsActivity.class);
                         intent.putExtra("posts", Parcels.wrap(post));
                         context.startActivity(intent);
@@ -88,17 +94,41 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
             postContainer2.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    int position = getAdapterPosition();
-                    Post post = posts.get(position);
-                    Log.i("Position", "Position is "+ post);
+                    AlertDialog.Builder saveDialog = new AlertDialog.Builder(context);
+                    saveDialog.setTitle("Delete?");
+                    saveDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            int position = getAdapterPosition();
+                            Post post = postsToDisplay.get(position);
+                            Log.i("Position", "Position is "+ post);
 
-                    String objectId = post.getIdObject();
-                    Log.i("Delete", "ObjectId is " + objectId);
-                    deleteObject(objectId);
+                            post.deleteInBackground(new DeleteCallback() {
+                                @Override
+                                public void done(ParseException e2) {
+                                    if(e2==null){
+                                        Toast.makeText(context, "Delete Successful", Toast.LENGTH_SHORT).show();
+                                    }else{
+                                        Toast.makeText(context, "Error: "+e2.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
 
+                            postsToDisplay.remove(position);
+                            notifyDataSetChanged();
+                        }
+                    });
+                    saveDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    saveDialog.show();
                     return true;
                 }
             });
+
             if (image != null) {
                 Glide.with(context).load(image.getUrl()).into(ivImage2);
             }
@@ -112,23 +142,5 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
         posts.addAll(list);
         postsToDisplay.addAll(list);
         notifyDataSetChanged();
-    }
-
-
-    private void deleteObject(String objectId) {
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("Post");
-        query.getInBackground(objectId, (object, e) -> {
-            if (e == null) {
-                object.deleteInBackground(e2 -> {
-                    if(e2==null){
-                        Toast.makeText(context, "Delete Successful", Toast.LENGTH_SHORT).show();
-                    }else{
-                        Toast.makeText(context, "Error: "+e2.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }else{
-                Toast.makeText(context, "Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 }

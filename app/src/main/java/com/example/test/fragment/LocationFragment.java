@@ -34,6 +34,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import androidx.appcompat.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -79,13 +80,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+
 public class LocationFragment extends Fragment {
     private static final String TAG = "LocationFragment";
     private final int MAX_RADIUS = 25000;
     private final int MIN_RADIUS = 2000;
-    private final int VISIBILITY = 0;
-
-
     private Spinner spType;
     private Button btFind;
     private SupportMapFragment supportMapFragment;
@@ -96,12 +95,9 @@ public class LocationFragment extends Fragment {
     private ImageButton btnUp;
     private ImageButton btnDown;
     private int radius = 10000;
-    private List<Marker> markers;
-    private LatLng midLatLng;
     private Circle circle;
-
-
-
+    private SearchView idSearchView;
+    private final List<Post> posts2 = new ArrayList<>();
 
 
     public LocationFragment() {
@@ -129,6 +125,7 @@ public class LocationFragment extends Fragment {
         btFind = view.findViewById(R.id.bt_find);
         btnUp = view.findViewById(R.id.btnUp);
         btnDown = view.findViewById(R.id.btnDown);
+        idSearchView = view.findViewById(R.id.idSearchView);
         supportMapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.google_map);
 
         String[] placeTypeList = {"location_of_all_users ", "posts", "museum", "exhibition_centers"};
@@ -138,29 +135,44 @@ public class LocationFragment extends Fragment {
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
 
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             getCurrentLocation();
+        } else {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 44);
         }
-        else {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
-        }
+
+        idSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                String label = idSearchView.getQuery().toString();
+                Log.i("LocationFragment", " Posts are " + posts2);
+                btnDown.setVisibility(View.INVISIBLE);
+                btnUp.setVisibility(View.INVISIBLE);
+                showPostLabels(map, label);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
 
         btFind.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int i = spType.getSelectedItemPosition();
-                if (i == 0){
+                if (i == 0) {
                     map.clear();
                     getCurrentLocation();
-                }
-                else if (i == 1) {
-                    btnDown.setVisibility(VISIBILITY);
-                    btnUp.setVisibility(VISIBILITY);
+                } else if (i == 1) {
+                    btnDown.setVisibility(View.VISIBLE);
+                    btnUp.setVisibility(View.VISIBLE);
+                    idSearchView.setVisibility(View.VISIBLE);
                     map.clear();
                     showPosts(map);
 
-                }
-                else {
+                } else {
                     String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" +
                             "?location=" + currentLat + "," + currentLong +
                             "&radius=5000" +
@@ -176,7 +188,7 @@ public class LocationFragment extends Fragment {
         btnUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(radius != MAX_RADIUS){
+                if (radius != MAX_RADIUS) {
                     radius = radius + 2000;
                 }
                 showPosts(map);
@@ -186,7 +198,7 @@ public class LocationFragment extends Fragment {
         btnDown.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (radius != MIN_RADIUS){
+                if (radius != MIN_RADIUS) {
                     radius = radius - 2000;
                 }
                 showPosts(map);
@@ -200,7 +212,7 @@ public class LocationFragment extends Fragment {
         task.addOnSuccessListener(new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
-                if (location != null){
+                if (location != null) {
                     currentLat = location.getLatitude();
                     currentLong = location.getLongitude();
                     supportMapFragment.getMapAsync(new OnMapReadyCallback() {
@@ -229,14 +241,14 @@ public class LocationFragment extends Fragment {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if(requestCode == 44){
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+        if (requestCode == 44) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getCurrentLocation();
             }
         }
     }
 
-    private class PlaceTask extends AsyncTask<String,Integer,String> {
+    private class PlaceTask extends AsyncTask<String, Integer, String> {
 
         @Override
         protected String doInBackground(String... strings) {
@@ -265,7 +277,7 @@ public class LocationFragment extends Fragment {
         StringBuilder builder = new StringBuilder();
         String line = "";
 
-        while((line = reader.readLine()) != null){
+        while ((line = reader.readLine()) != null) {
             builder.append(line);
         }
         String data = builder.toString();
@@ -274,11 +286,11 @@ public class LocationFragment extends Fragment {
     }
 
 
-    private class ParserTask extends AsyncTask<String,Integer, List<HashMap<String,String>>>  {
+    private class ParserTask extends AsyncTask<String, Integer, List<HashMap<String, String>>> {
         @Override
         protected List<HashMap<String, String>> doInBackground(String... strings) {
             JsonParser jsonParser = new JsonParser();
-            List<HashMap<String,String>> mapList = null;
+            List<HashMap<String, String>> mapList = null;
             JSONObject object = null;
             try {
                 object = new JSONObject(strings[0]);
@@ -293,12 +305,12 @@ public class LocationFragment extends Fragment {
         @Override
         protected void onPostExecute(List<HashMap<String, String>> hashMaps) {
             map.clear();
-            for(int i=0; i<hashMaps.size(); i++){
-                HashMap<String,String> hashMapList = hashMaps.get(i);
+            for (int i = 0; i < hashMaps.size(); i++) {
+                HashMap<String, String> hashMapList = hashMaps.get(i);
                 double lat = Double.parseDouble(hashMapList.get("lat"));
                 double lng = Double.parseDouble(hashMapList.get("lng"));
                 String name = hashMapList.get("name");
-                LatLng latLng = new LatLng(lat,lng);
+                LatLng latLng = new LatLng(lat, lng);
                 MarkerOptions options = new MarkerOptions();
                 options.position(latLng);
                 options.title(name);
@@ -309,7 +321,7 @@ public class LocationFragment extends Fragment {
         }
     }
 
-    private ParseGeoPoint getParseUserLocation(){
+    private ParseGeoPoint getParseUserLocation() {
 
         ParseUser currentUser = ParseUser.getCurrentUser();
 
@@ -321,7 +333,7 @@ public class LocationFragment extends Fragment {
 
     }
 
-    private void showParseUserInMap(final GoogleMap googleMap){
+    private void showParseUserInMap(final GoogleMap googleMap) {
 
         ParseGeoPoint currentUserLocation = getParseUserLocation();
         LatLng currentUser = new LatLng(currentUserLocation.getLatitude(), currentUserLocation.getLongitude());
@@ -332,16 +344,17 @@ public class LocationFragment extends Fragment {
     }
 
 
-    private void showUsers(final GoogleMap googleMap){
+    private void showUsers(final GoogleMap googleMap) {
         ParseQuery<ParseUser> query = ParseUser.getQuery();
         query.whereWithinMiles("Location", getParseUserLocation(), 1000);
         query.setLimit(10);
         query.findInBackground(new FindCallback<ParseUser>() {
-            @Override  public void done(List<ParseUser> nearUsers, ParseException e) {
+            @Override
+            public void done(List<ParseUser> nearUsers, ParseException e) {
                 if (e == null) {
                     ParseUser users = ParseUser.getCurrentUser();
-                    for(int i = 0; i < nearUsers.size(); i++) {
-                        if(!nearUsers.get(i).getObjectId().equals(users.getObjectId())) {
+                    for (int i = 0; i < nearUsers.size(); i++) {
+                        if (!nearUsers.get(i).getObjectId().equals(users.getObjectId())) {
                             users = nearUsers.get(i);
                             showParseUserInMap(googleMap);
                             LatLng userLocation = new LatLng(users.getParseGeoPoint("Location").getLatitude(), users.getParseGeoPoint("Location").getLongitude());
@@ -358,7 +371,7 @@ public class LocationFragment extends Fragment {
     }
 
 
-    private void showPosts(final GoogleMap googleMap){
+    private void showPosts(final GoogleMap googleMap) {
         googleMap.clear();
 
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
@@ -368,68 +381,12 @@ public class LocationFragment extends Fragment {
         query.findInBackground(new FindCallback<Post>() {
             @Override
             public void done(List<Post> posts, ParseException e) {
-                if ( e != null){
+                if (e != null) {
                     Log.e(TAG, "Issue with getting posts", e);
                     return;
                 }
-                for (Post post : posts ){
-                    ParseGeoPoint postLocation = post.getGeoLocation();
-                    if (postLocation != null) {
-                        LatLng currentPost = new LatLng(postLocation.getLatitude(), postLocation.getLongitude());
-                        ParseFile image = post.getImage();
-                        image.getDataInBackground(new GetDataCallback() {
-                            @Override
-                            public void done(byte[] data, ParseException e) {
-                                if (e == null && data != null) {
-                                    Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-
-
-                                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                                    bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
-                                    final byte[] b = baos.toByteArray();
-
-                                    // thumbnail that will replace the marker icon
-                                    Bitmap thumbnail = ThumbnailUtils.extractThumbnail(getCroppedBitmap(bitmap), 200, 200);
-
-                                    if (isInMaxRadius(userLocation, postLocation, radius)){
-                                        Marker newMarker = googleMap.addMarker(new MarkerOptions()
-                                                .title("Posts")
-                                                .icon(BitmapDescriptorFactory.fromBitmap(thumbnail))
-                                                .position(currentPost)
-                                                .visible(true)
-                                        );
-
-                                        newMarker.setTag(post);
-                                    }
-                                    else{
-                                        Marker newMarker2 = googleMap.addMarker(new MarkerOptions()
-                                                .title("Posts")
-                                                .icon(BitmapDescriptorFactory.fromBitmap(thumbnail))
-                                                .position(currentPost)
-                                                .visible(false)
-                                        );
-                                        newMarker2.setTag(post);
-                                    }
-
-
-                                }
-                            }
-
-                        });
-
-                        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                            @Override
-                            public boolean onMarkerClick(@NonNull Marker marker) {
-                                Intent intent = new Intent(getContext(), DetailsActivity.class);
-                                marker.getTag();
-                                Post post = (Post) marker.getTag();
-                                Bundle bundle = new Bundle();
-                                intent.putExtra("posts", Parcels.wrap(post));
-                                startActivity(intent);
-                                return true;
-                            }
-                        });
-                    }
+                for (Post post : posts) {
+                    addMarker(post, googleMap, userLocation);
                 }
                 circle = googleMap.addCircle(new CircleOptions()
                         .center(userLoc)
@@ -442,31 +399,9 @@ public class LocationFragment extends Fragment {
 
     }
 
-    private LatLng getLatLng(String location) {
-        LatLng latLng = null;
-        if (getContext() != null) {
-            Geocoder geocoder = new Geocoder(getContext());
-            List<Address> addressList;
-
-            try {
-                addressList = geocoder.getFromLocationName(location, 1);
-
-                if (addressList != null && addressList.size() != 0) {
-                    double lat = addressList.get(0).getLatitude();
-                    double lng = addressList.get(0).getLongitude();
-                    latLng = new LatLng(lat, lng);
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return latLng;
-    }
-
     private boolean isInMaxRadius(ParseGeoPoint currentUser, ParseGeoPoint post, int radius) {
         double distance = distance(currentUser.getLatitude(), currentUser.getLongitude(), post.getLatitude(), post.getLongitude());
-        if (distance > radius/2){
+        if (distance > radius / 2) {
             return false;
         }
         return true;
@@ -494,24 +429,6 @@ public class LocationFragment extends Fragment {
         return (rad * 180.0 / Math.PI);
     }
 
-    public Bitmap getBitmapFromLink(String link) {
-        try {
-            URL url = new URL(link);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            try {
-                connection.connect();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            return myBitmap;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     public Bitmap getCroppedBitmap(Bitmap bitmap) {
         Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
                 bitmap.getHeight(), Bitmap.Config.ARGB_8888);
@@ -533,4 +450,82 @@ public class LocationFragment extends Fragment {
         return output;
     }
 
+    private void showPostLabels(final GoogleMap googleMap, String label) {
+        googleMap.clear();
+
+        ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        ParseGeoPoint userLocation = currentUser.getParseGeoPoint("Location");
+        LatLng userLoc = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
+        query.findInBackground(new FindCallback<Post>() {
+            @Override
+            public void done(List<Post> posts, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "Issue with getting posts", e);
+                    return;
+                }
+                for (Post post : posts) {
+                    if (post.getLabels().toLowerCase().contains(label)) {
+                        addMarker(post, googleMap, userLocation);
+                    }
+
+                }
+            }
+        });
+
+
+    }
+
+    private void addMarker(Post post, GoogleMap googleMap, ParseGeoPoint userLocation) {
+        ParseGeoPoint postLocation = post.getGeoLocation();
+        if (postLocation != null) {
+            LatLng currentPost = new LatLng(postLocation.getLatitude(), postLocation.getLongitude());
+            ParseFile image = post.getImage();
+            image.getDataInBackground(new GetDataCallback() {
+                @Override
+                public void done(byte[] data, ParseException e) {
+                    if (e == null && data != null) {
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+                        final byte[] b = baos.toByteArray();
+
+                        Bitmap thumbnail = ThumbnailUtils.extractThumbnail(getCroppedBitmap(bitmap), 200, 200);
+
+                        if (isInMaxRadius(userLocation, postLocation, radius)) {
+                            Marker newMarker = googleMap.addMarker(new MarkerOptions()
+                                    .title("Posts")
+                                    .icon(BitmapDescriptorFactory.fromBitmap(thumbnail))
+                                    .position(currentPost)
+                                    .visible(true)
+                            );
+
+                            newMarker.setTag(post);
+                        } else {
+                            Marker newMarker2 = googleMap.addMarker(new MarkerOptions()
+                                    .title("Posts")
+                                    .icon(BitmapDescriptorFactory.fromBitmap(thumbnail))
+                                    .position(currentPost)
+                                    .visible(false)
+                            );
+                            newMarker2.setTag(post);
+                        }
+                    }
+                }
+
+            });
+            googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(@NonNull Marker marker) {
+                    Intent intent = new Intent(getContext(), DetailsActivity.class);
+                    marker.getTag();
+                    Post post = (Post) marker.getTag();
+                    intent.putExtra("posts", Parcels.wrap(post));
+                    startActivity(intent);
+                    return true;
+                }
+            });
+        }
+
+    }
 }
