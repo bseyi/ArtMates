@@ -85,19 +85,20 @@ public class LocationFragment extends Fragment {
     private static final String TAG = "LocationFragment";
     private final int MAX_RADIUS = 25000;
     private final int MIN_RADIUS = 2000;
+    private final List<Post> posts2 = new ArrayList<>();
     private Spinner spType;
     private Button btFind;
     private SupportMapFragment supportMapFragment;
     private GoogleMap map;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private double currentLat = 0, currentLong = 0;
-
     private ImageButton btnUp;
     private ImageButton btnDown;
+    private ImageButton btnCurrentLoc;
     private int radius = 10000;
     private Circle circle;
     private SearchView idSearchView;
-    private final List<Post> posts2 = new ArrayList<>();
+    private LatLng latLng2;
 
 
     public LocationFragment() {
@@ -107,8 +108,6 @@ public class LocationFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
     }
 
     @Override
@@ -126,6 +125,7 @@ public class LocationFragment extends Fragment {
         btnUp = view.findViewById(R.id.btnUp);
         btnDown = view.findViewById(R.id.btnDown);
         idSearchView = view.findViewById(R.id.idSearchView);
+        btnCurrentLoc = view.findViewById(R.id.btnCurrentLoc);
         supportMapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.google_map);
 
         String[] placeTypeList = {"location_of_all_users ", "posts", "museum", "exhibition_centers"};
@@ -164,6 +164,8 @@ public class LocationFragment extends Fragment {
                 int i = spType.getSelectedItemPosition();
                 if (i == 0) {
                     map.clear();
+                    btnDown.setVisibility(View.INVISIBLE);
+                    btnUp.setVisibility(View.INVISIBLE);
                     getCurrentLocation();
                 } else if (i == 1) {
                     btnDown.setVisibility(View.VISIBLE);
@@ -171,8 +173,12 @@ public class LocationFragment extends Fragment {
                     idSearchView.setVisibility(View.VISIBLE);
                     map.clear();
                     showPosts(map);
+                }
+                else {
+                    idSearchView.setVisibility(View.INVISIBLE);
+                    btnDown.setVisibility(View.INVISIBLE);
+                    btnUp.setVisibility(View.INVISIBLE);
 
-                } else {
                     String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" +
                             "?location=" + currentLat + "," + currentLong +
                             "&radius=5000" +
@@ -205,6 +211,13 @@ public class LocationFragment extends Fragment {
             }
         });
 
+        btnCurrentLoc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moveCamera(latLng2, map);
+            }
+        });
+
     }
 
     private void getCurrentLocation() {
@@ -226,11 +239,9 @@ public class LocationFragment extends Fragment {
                             showUsers(googleMap);
 
                             LatLng latlng = new LatLng(currentLat, currentLong);
+                            latLng2 = latlng;
                             map = googleMap;
-                            map.moveCamera(CameraUpdateFactory.newLatLng(latlng));
-                            map.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                                    new LatLng(currentLat, currentLong), 12
-                            ));
+                            moveCamera(latlng, map);
                         }
                     });
                 }
@@ -472,8 +483,6 @@ public class LocationFragment extends Fragment {
                 }
             }
         });
-
-
     }
 
     private void addMarker(Post post, GoogleMap googleMap, ParseGeoPoint userLocation) {
@@ -528,4 +537,13 @@ public class LocationFragment extends Fragment {
         }
 
     }
+
+    private void moveCamera(LatLng latLng, GoogleMap googleMap){
+        latLng = new LatLng(currentLat, currentLong);
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(currentLat, currentLong), 12
+        ));
+    }
+
 }

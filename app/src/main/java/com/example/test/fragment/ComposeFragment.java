@@ -4,6 +4,7 @@ import static android.app.Activity.RESULT_OK;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -62,6 +63,7 @@ import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+import com.yalantis.ucrop.UCrop;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -77,8 +79,6 @@ import java.util.Locale;
 public class ComposeFragment extends Fragment implements DatePickerDialog.OnDateSetListener {
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 42;
     private static final String TAG = "ComposeFragment";
-
-
     private ImageView ivPostImage;
     private Button btnCanvas;
     private Button btnTakePhoto2;
@@ -92,17 +92,14 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
     private Button btnSubmit;
     private ImageButton ibDate;
     private Button btnGetLocation;
-    private static final int PICK_PHOTO_CODE = 1042;
     private ImageClassifier imageClassifier;
     private ListView lvLabels;
     private String labels = " ";
     private final List<String> predictionsList = new ArrayList<>();
     private FusedLocationProviderClient client;
     private static final String  AUTHORITY_NAME = "com.example.fileprovider.test";
-
-
-
-
+    private final int CODE_IMG_GALLERY = 1;
+    private final String SAMPLE_CROPPED_IMG_NAME = "SampleCropImg";
 
     public ComposeFragment() {
     }
@@ -148,7 +145,7 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
         btnUploadPhoto2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onPickPhoto(v);
+                startActivityForResult(new Intent().setAction(Intent.ACTION_GET_CONTENT).setType("image/*"), CODE_IMG_GALLERY);
             }
         });
 
@@ -180,9 +177,7 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
                 }
 
                 ParseUser currentUser = ParseUser.getCurrentUser();
-
                 savePost(description, aboutWork, location, date, currentUser, photoFile, labels);
-
             }
         });
 
@@ -289,8 +284,6 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
         }
     }
 
-
-
     private void launchCamera() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         photoFile = getPhotoFileUri(photoFileName);
@@ -306,6 +299,7 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
@@ -313,44 +307,95 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
             } else {
                 Toast.makeText(getContext(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
             }
-        } else if ((data != null) && requestCode == PICK_PHOTO_CODE) {
-            File f = new File(getContext().getCacheDir(), photoFileName);
-            try {
-                f.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            Uri photoUri = data.getData();
-            Bitmap selectedImage = loadFromUri(photoUri);
-            LabelSave(selectedImage);
-
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            selectedImage.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
-            byte[] bitMapData = bos.toByteArray();
-
-            FileOutputStream fos = null;
-            try {
-                fos = new FileOutputStream(photoFile);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            try {
-                fos.write(bitMapData);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                fos.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                fos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+        }else if (requestCode == CODE_IMG_GALLERY && resultCode == RESULT_OK) {
+            Uri imageUri = data.getData();
+            if (imageUri != null) {
+                startCrop(imageUri);
             }
         }
+        else if(requestCode == UCrop.REQUEST_CROP) {
+            photoFile = getPhotoFileUri(photoFileName);
+
+            File f = new File(getContext().getCacheDir(), photoFileName);
+                try {
+                    f.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Uri imageUriResultCrop = UCrop.getOutput(data);
+                Bitmap selectedImage = loadFromUri(imageUriResultCrop);
+
+                LabelSave(selectedImage);
+
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                selectedImage.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
+                byte[] bitMapData = bos.toByteArray();
+
+                FileOutputStream fos = null;
+                try {
+                    fos = new FileOutputStream(photoFile);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    fos.write(bitMapData);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    fos.flush();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
     }
+
+    private void startCrop(@NonNull Uri uri){
+        String destinationFileName = SAMPLE_CROPPED_IMG_NAME;
+        destinationFileName += ".jpg";
+
+        UCrop uCrop = UCrop.of(uri, Uri.fromFile(new File(getContext().getCacheDir(), destinationFileName)));
+
+        uCrop.withAspectRatio(1,1);
+        uCrop.withAspectRatio(3,4);
+        uCrop.useSourceImageAspectRatio();
+        uCrop.withAspectRatio(2,3);
+        uCrop.withAspectRatio(16,9);
+
+        uCrop.withMaxResultSize(450,450);
+
+        uCrop.withOptions(getCropOptions());
+
+        uCrop.start(getActivity().getApplicationContext(), this, UCrop.REQUEST_CROP);
+    }
+
+    private UCrop.Options getCropOptions(){
+        UCrop.Options options = new UCrop.Options();
+        options.setCompressionQuality(70);
+
+        //CompressType
+        options.setCompressionFormat(Bitmap.CompressFormat.PNG);
+        options.setCompressionFormat(Bitmap.CompressFormat.JPEG);
+
+        //UI
+        options.setHideBottomControls(false);
+        options.setFreeStyleCropEnabled(false);
+
+        //colors
+        options.setStatusBarColor(getResources().getColor(R.color.design_default_color_primary_dark));
+        options.setToolbarColor(getResources().getColor(R.color.design_default_color_primary));
+
+        options.setToolbarTitle("Edit Image");
+
+        return options;
+    }
+
 
     public File getPhotoFileUri(String fileName) {
         File mediaStorageDir = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), TAG);
@@ -360,16 +405,6 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
 
 
         return new File(mediaStorageDir.getPath() + File.separator + fileName);
-    }
-
-    public void onPickPhoto(View view) {
-        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        photoFile = getPhotoFileUri(photoFileName);
-
-
-        if (intent.resolveActivity(getContext().getPackageManager()) != null) {
-            startActivityForResult(intent, PICK_PHOTO_CODE);
-        }
     }
 
     public Bitmap loadFromUri(Uri photoUri) {

@@ -10,6 +10,7 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -97,11 +98,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> im
                     likeButton.setImageDrawable(ContextCompat.getDrawable(context, icon));
                 }
             });
-
         }
-
-
-
 
         public void bind(Post post) {
             postContainer.setOnClickListener(new View.OnClickListener() {
@@ -116,8 +113,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> im
                     }
                 }
             });
-
-
 
             tvDescription.setText(post.getDescription());
             tvUsername.setText(post.getUser().getUsername());
@@ -231,7 +226,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> im
                     if (post.getLabels().toLowerCase().contains(filterPattern)) {
                         filteredList.add(post);
                     }
-
                 }
             }
 

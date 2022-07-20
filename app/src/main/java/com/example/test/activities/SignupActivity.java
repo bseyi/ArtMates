@@ -18,11 +18,6 @@ import com.parse.SignUpCallback;
 import java.io.File;
 
 public class SignupActivity extends AppCompatActivity {
-
-    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 42;
-    private static final String CONTENT_TYPE = "profilePicture.png";
-    private static final String  AUTHORITY_NAME = "com.example.fileprovider.test";
-    private static final int PICK_PHOTO_CODE = 1042;
     private static final String TAG = "SignupActivity";
     private EditText etNewUser;
     private EditText etEmail;
@@ -30,9 +25,6 @@ public class SignupActivity extends AppCompatActivity {
     private Button goToSignIn;
     private Button btnSignUp2;
     private EditText etFullName;
-    private File photoFile;
-    private String photoFileName = "photo.jpg";
-
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,8 +36,6 @@ public class SignupActivity extends AppCompatActivity {
         goToSignIn = findViewById(R.id.goToSignIn);
         btnSignUp2 = findViewById(R.id.btnSignUp2);
         etFullName = findViewById(R.id.etFullName);
-
-
 
         goToSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,8 +55,6 @@ public class SignupActivity extends AppCompatActivity {
                 signUpUser(username, password, email, fullName);
             }
         });
-
-
     }
 
     private void signUpUser(String username, String password, String email, String fullName) {
@@ -77,7 +65,6 @@ public class SignupActivity extends AppCompatActivity {
         user.setPassword(password);
         user.setEmail(email);
         user.put("fullName", fullName);
-
 
         user.signUpInBackground(new SignUpCallback() {
             @Override
@@ -93,7 +80,6 @@ public class SignupActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
 
     public void goToLoginActivity() {
@@ -101,7 +87,4 @@ public class SignupActivity extends AppCompatActivity {
         startActivity(i);
         finish();
     }
-
-
-
 }

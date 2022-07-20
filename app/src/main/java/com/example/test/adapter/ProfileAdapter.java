@@ -53,7 +53,6 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Post post = postsToDisplay.get(position);
         holder.bind(post);
-
     }
 
     @Override
@@ -75,7 +74,6 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
 
             ParseFile profileImg = (ParseFile) post.getUser().get("profileImage");
             ParseFile image = post.getImage();
-
 
             postContainer2.setOnClickListener(new View.OnClickListener() {
                 @Override

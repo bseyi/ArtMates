@@ -44,7 +44,7 @@
             android:id="@+id/btnUp"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="24dp"
             android:background="@drawable/ic_up"
             android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@+id/btnDown"
@@ -57,7 +57,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_marginEnd="24dp"
-            android:layout_marginBottom="32dp"
+            android:layout_marginBottom="104dp"
             android:background="@drawable/ic_down"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -65,20 +65,30 @@
 
         <androidx.appcompat.widget.SearchView
             android:id="@+id/idSearchView"
-            android:layout_width="392dp"
-            android:layout_height="40dp"
+            android:layout_width="289dp"
+            android:layout_height="34dp"
             android:layout_margin="10dp"
+            android:layout_marginEnd="30dp"
             android:background="@color/white"
             android:elevation="5dp"
             android:visibility="invisible"
             app:iconifiedByDefault="false"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnCurrentLoc"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.102"
+            app:layout_constraintVertical_bias="0.084"
             app:queryHint="Search Labels Here" />
+
+        <ImageButton
+            android:id="@+id/btnCurrentLoc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_my_location"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/btnDown"
+            app:layout_constraintStart_toStartOf="@+id/btnDown" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

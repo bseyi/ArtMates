@@ -27,7 +27,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
     private final String mUserId;
     private static final int MESSAGE_OUTGOING = 123;
     private static final int MESSAGE_INCOMING = 321;
-    private List<Post> posts;
 
     @Override
     public int getItemViewType(int position) {
@@ -60,7 +59,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
             throw new IllegalArgumentException("Unknown view type");
         }
     }
-
 
     @Override
     public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
@@ -103,8 +101,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
             if (profileImg != null) {
                 Glide.with(mContext).load(profileImg.getUrl()).circleCrop().into(imageOther);
             }
-
-
         }
     }
 
@@ -145,7 +141,5 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
             return false;
         }
     }
-
-
 
 }

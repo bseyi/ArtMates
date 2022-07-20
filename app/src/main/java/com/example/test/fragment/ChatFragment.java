@@ -36,7 +36,6 @@ import java.util.List;
 public class ChatFragment extends Fragment {
 
     private static final int MAX_CHAT_MESSAGES_TO_SHOW = 50;
-
     private static final String TAG = "ChatFragment";
     private ImageButton ibSend;
     private EditText etMessage;

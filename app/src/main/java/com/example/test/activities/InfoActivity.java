@@ -11,7 +11,6 @@ import com.example.test.R;
 import com.parse.ParseUser;
 
 public class InfoActivity extends AppCompatActivity {
-    private static final String TAG = "InfoActivity";
     private ImageView ivProfilePic;
     private TextView tvUserName;
 
@@ -28,13 +27,10 @@ public class InfoActivity extends AppCompatActivity {
         tvFullName = findViewById(R.id.tvFullName);
         tvEmail = findViewById(R.id.tvEmail);
 
-
         if(ParseUser.getCurrentUser() != null)
         {
             tvUserName.setText(ParseUser.getCurrentUser().getUsername());
             tvEmail.setText(ParseUser.getCurrentUser().getEmail());
-
-
             tvFullName.setText(ParseUser.getCurrentUser().getString("fullName"));
 
             ParseUser user = ParseUser.getCurrentUser();
@@ -47,6 +43,4 @@ public class InfoActivity extends AppCompatActivity {
 
         }
     }
-
-
 }
