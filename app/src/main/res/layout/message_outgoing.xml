@@ -8,7 +8,8 @@
     android:clipToPadding="false"
     android:paddingVertical="10dp"
     android:paddingLeft="60dp"
-    android:paddingRight="15dp">
+    android:paddingRight="15dp"
+    android:id="@+id/chatContainer">
 
     <TextView
         android:id="@+id/tvBody"

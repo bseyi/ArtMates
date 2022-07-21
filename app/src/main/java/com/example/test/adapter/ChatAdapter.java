@@ -1,12 +1,16 @@
 package com.example.test.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,6 +19,8 @@ import com.bumptech.glide.Glide;
 import com.example.test.Message;
 import com.example.test.Post;
 import com.example.test.R;
+import com.parse.DeleteCallback;
+import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 
@@ -107,11 +113,13 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
     public class OutgoingMessageViewHolder extends MessageViewHolder {
         private final ImageView imageMe;
         private final TextView body;
+        private RelativeLayout chatContainer;
 
         public OutgoingMessageViewHolder(View itemView) {
             super(itemView);
             imageMe = (ImageView)itemView.findViewById(R.id.ivProfileMe);
             body = (TextView)itemView.findViewById(R.id.tvBody);
+            chatContainer = itemView.findViewById(R.id.chatContainer);
         }
 
         @Override
@@ -128,6 +136,44 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
 
             }
             body.setText(message.getBody());
+
+            chatContainer.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    AlertDialog.Builder saveDialog = new AlertDialog.Builder(mContext);
+                    saveDialog.setTitle("Delete?");
+                    saveDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            int position = getAdapterPosition();
+                            Message message = mMessages.get(position);
+                            Log.i("Position", "Position is "+ message);
+
+                            message.deleteInBackground(new DeleteCallback() {
+                                @Override
+                                public void done(ParseException e2) {
+                                    if(e2==null){
+                                        Toast.makeText(mContext, "Delete Successful", Toast.LENGTH_SHORT).show();
+                                    }else{
+                                        Toast.makeText(mContext, "Error: "+e2.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+
+                            mMessages.remove(position);
+                            notifyDataSetChanged();
+                        }
+                    });
+                    saveDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    saveDialog.show();
+                    return true;
+                }
+            });
         }
     }
 
