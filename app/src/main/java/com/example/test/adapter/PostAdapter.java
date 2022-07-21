@@ -1,5 +1,6 @@
 package com.example.test.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -21,6 +22,7 @@ import com.bumptech.glide.Glide;
 import com.example.test.Post;
 import com.example.test.R;
 import com.example.test.activities.DetailsActivity;
+import com.github.chrisbanes.photoview.PhotoView;
 import com.parse.ParseFile;
 
 import org.parceler.Parcels;

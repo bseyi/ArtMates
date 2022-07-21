@@ -116,7 +116,6 @@ public class PostsFragment extends Fragment {
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
         ParseUser currentUser = ParseUser.getCurrentUser();
         ParseGeoPoint userLocation = currentUser.getParseGeoPoint("Location");
-        Log.i("Location", "Location is "+ userLocation);
         post.setGeoLocation(userLocation);
         query.whereNear(Post.KEY_GEOLOCATION, userLocation);
         query.setLimit(POST_LIMIT);
@@ -142,6 +141,7 @@ public class PostsFragment extends Fragment {
                 adapter.clear();
                 queryByMileRadius();
                 adapter.notifyDataSetChanged();
+                return true;
 
             case R.id.newest:
                 adapter.clear();

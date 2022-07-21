@@ -32,6 +32,7 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.3890625" />
         <entry key="app/src/main/res/layout/activity_signup.xml" value="0.335" />
         <entry key="app/src/main/res/layout/custom_grid.xml" value="0.286231884057971" />
+        <entry key="app/src/main/res/layout/dialog_custom_layout.xml" value="0.5911458333333334" />
         <entry key="app/src/main/res/layout/fragment_chat.xml" value="0.286231884057971" />
         <entry key="app/src/main/res/layout/fragment_compose.xml" value="0.3890625" />
         <entry key="app/src/main/res/layout/fragment_dialog_stroke_selector.xml" value="0.5765625" />

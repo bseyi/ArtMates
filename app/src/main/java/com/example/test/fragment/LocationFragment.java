@@ -440,7 +440,7 @@ public class LocationFragment extends Fragment {
         return (rad * 180.0 / Math.PI);
     }
 
-    public Bitmap getCroppedBitmap(Bitmap bitmap) {
+    private Bitmap getCroppedBitmap(Bitmap bitmap) {
         Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
                 bitmap.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
@@ -501,8 +501,9 @@ public class LocationFragment extends Fragment {
 
                         Bitmap thumbnail = ThumbnailUtils.extractThumbnail(getCroppedBitmap(bitmap), 200, 200);
 
+                        Marker newMarker;
                         if (isInMaxRadius(userLocation, postLocation, radius)) {
-                            Marker newMarker = googleMap.addMarker(new MarkerOptions()
+                             newMarker = googleMap.addMarker(new MarkerOptions()
                                     .title("Posts")
                                     .icon(BitmapDescriptorFactory.fromBitmap(thumbnail))
                                     .position(currentPost)
@@ -511,13 +512,13 @@ public class LocationFragment extends Fragment {
 
                             newMarker.setTag(post);
                         } else {
-                            Marker newMarker2 = googleMap.addMarker(new MarkerOptions()
+                             newMarker = googleMap.addMarker(new MarkerOptions()
                                     .title("Posts")
                                     .icon(BitmapDescriptorFactory.fromBitmap(thumbnail))
                                     .position(currentPost)
                                     .visible(false)
                             );
-                            newMarker2.setTag(post);
+                            newMarker.setTag(post);
                         }
                     }
                 }

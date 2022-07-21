@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.util.Log;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,6 +19,10 @@ import com.parse.ParseUser;
 import org.parceler.Parcels;
 
 import java.util.Date;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
+import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener;
+
 
 public class DetailsActivity extends AppCompatActivity {
     public static final String TAG = "DetailsActivity";
@@ -33,6 +38,7 @@ public class DetailsActivity extends AppCompatActivity {
     private Post post;
     private Context context;
     private ImageView imageView;
+    private ScaleGestureDetector scaleGestureDetector;
 
 
 
@@ -52,14 +58,19 @@ public class DetailsActivity extends AppCompatActivity {
         date = findViewById(R.id.date);
         imageView = findViewById(R.id.imageView);
 
+        scaleGestureDetector = new ScaleGestureDetector(this, new PinchZoomListener());
+
         Bundle bundle = getIntent().getExtras();
         Post post = Parcels.unwrap(bundle.getParcelable("posts"));
 
-        
         ParseUser postUser = post.getUser();
 
         ParseFile image = post.getImage();
         if (image != null) {
+            imageView.startAnimation(AnimationUtils.loadAnimation(
+                    getApplicationContext(),
+                    R.anim.fade_in
+            ));
             Glide.with(this).load(image.getUrl()).into(imageView);
         }
 
@@ -93,6 +104,46 @@ public class DetailsActivity extends AppCompatActivity {
                     .load(user.getParseFile("profilePicture").getUrl())
                     .circleCrop() // create an effect of a round profile picture
                     .into(profilePic);
+        }
+
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        scaleGestureDetector.onTouchEvent(event);
+        return true;
+    }
+
+    public class PinchZoomListener extends SimpleOnScaleGestureListener{
+
+        @Override
+        public boolean onScale(ScaleGestureDetector detector) {
+            float gestureFactor = detector.getScaleFactor();
+
+            if(gestureFactor > 1){
+                imageView.startAnimation(AnimationUtils.loadAnimation(
+                        getApplicationContext(),
+                        R.anim.zoom_out
+                ));
+            }
+            else {
+                imageView.startAnimation(AnimationUtils.loadAnimation(
+                        getApplicationContext(),
+                        R.anim.zoom_in
+                ));
+            }
+
+            return true;
+        }
+
+        @Override
+        public boolean onScaleBegin(ScaleGestureDetector detector) {
+            return true;
+        }
+
+        @Override
+        public void onScaleEnd(ScaleGestureDetector detector) {
+            super.onScaleEnd(detector);
         }
     }
 
