@@ -10,7 +10,6 @@
     <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-
     <queries>
 
         <!-- CameraClass -->
@@ -23,7 +22,7 @@
     </queries>
 
     <application
-        android:name="com.example.test.ParseApplication"
+        android:name=".ParseApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -32,23 +31,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
-        <activity android:name="com.yalantis.ucrop.UCropActivity"
-            android:screenOrientation="portrait"
-            />
         <activity
-            android:name="com.example.test.activities.CanvasActivity"
+            android:name=".activities.CommentActivity"
             android:exported="true" />
         <activity
-            android:name="com.example.test.activities.InfoActivity"
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.CanvasActivity"
+            android:exported="true" />
+        <activity
+            android:name=".activities.InfoActivity"
             android:exported="false" />
         <activity
-            android:name="com.example.test.activities.DetailsActivity"
+            android:name=".activities.DetailsActivity"
             android:exported="false" />
         <activity
-            android:name="com.example.test.activities.SignupActivity"
+            android:name=".activities.SignupActivity"
             android:exported="false" />
         <activity
-            android:name="com.example.test.activities.LandingPageActivity"
+            android:name=".activities.LandingPageActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -57,7 +59,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.test.activities.LoginActivity"
+            android:name=".activities.LoginActivity"
             android:exported="false" />
 
         <meta-data
@@ -65,7 +67,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name="com.example.test.activities.MainActivity"
+            android:name=".activities.MainActivity"
             android:exported="false" />
 
         <provider

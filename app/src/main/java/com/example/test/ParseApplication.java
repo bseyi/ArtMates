@@ -26,7 +26,7 @@ public class ParseApplication extends Application {
         );
         ParseObject.registerSubclass(Post.class);
         ParseObject.registerSubclass(Message.class);
-
+        ParseObject.registerSubclass(Comment.class);
 
 
     }

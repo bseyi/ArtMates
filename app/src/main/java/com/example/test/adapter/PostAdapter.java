@@ -2,11 +2,14 @@ package com.example.test.adapter;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
@@ -19,14 +22,23 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.test.Comment;
 import com.example.test.Post;
 import com.example.test.R;
+import com.example.test.TimeAgo;
+import com.example.test.activities.CommentActivity;
 import com.example.test.activities.DetailsActivity;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.parse.ParseFile;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseRelation;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import org.parceler.Parcels;
 
+import java.sql.Time;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,11 +47,11 @@ import java.util.Date;
 import java.util.List;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> implements Filterable {
+    private static final String TAG = "PostAdapter";
     private Context context;
     private List<Post> posts;
     private List<Post> postsToDisplay;
     private int icon;
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -73,6 +85,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> im
         private ConstraintLayout postContainer;
         private ImageView profilePic;
         private ImageView likeButton;
+        private TextView tvAllComments;
+        private ImageView commentButton;
+        private String myText;
         private boolean clicked = true;
 
         public ViewHolder(@NonNull View itemView) {
@@ -85,41 +100,109 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> im
             postContainer = itemView.findViewById(R.id.postContainer);
             profilePic = itemView.findViewById(R.id.ivProfileImage);
             likeButton = itemView.findViewById(R.id.likeButton);
-
-            likeButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (clicked){
-                        clicked = false;
-                        icon = R.drawable.ufi_heart_active;
-                    }
-                    else {
-                        clicked = true;
-                        icon = R.drawable.ufi_heart;
-                    }
-                    likeButton.setImageDrawable(ContextCompat.getDrawable(context, icon));
-                }
-            });
+            tvAllComments = itemView.findViewById(R.id.tvAllComments);
+            commentButton = itemView.findViewById(R.id.commentButton);
         }
 
         public void bind(Post post) {
+            int position = getAdapterPosition();
+            post = posts.get(position);
+            Post finalPost = post;
+
             postContainer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
-                        Post post = posts.get(position);
                         Intent intent = new Intent(context, DetailsActivity.class);
-                        intent.putExtra("posts", Parcels.wrap(post));
+                        intent.putExtra("posts", Parcels.wrap(finalPost));
                         context.startActivity(intent);
                     }
                 }
             });
 
+            tvAllComments.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (position != RecyclerView.NO_POSITION) {
+                        Intent intent = new Intent(context, CommentActivity.class);
+                        intent.putExtra(Post.class.getSimpleName(), Parcels.wrap(finalPost));
+                        context.startActivity(intent);
+                    }
+                }
+            });
+
+            likeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (position != RecyclerView.NO_POSITION) {
+                        if (clicked) {
+                            finalPost.setLike();
+                            clicked = false;
+                            icon = R.drawable.ufi_heart_active;
+
+                        } else {
+                            finalPost.resetLike();
+
+                            clicked = true;
+                            icon = R.drawable.ufi_heart;
+
+                        }
+
+                        likeButton.setImageDrawable(ContextCompat.getDrawable(context, icon));
+                    }
+                    finalPost.saveInBackground();
+                }
+            });
+
+            Post finalPost1 = post;
+            commentButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AlertDialog.Builder b = new  AlertDialog.Builder(context);
+                    b.setTitle("Say something nice");
+
+                    final EditText comment = new EditText(context);
+                    comment.setInputType(InputType.TYPE_CLASS_TEXT);
+
+                    b.setView(comment);
+                    b.setPositiveButton("Comment",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    myText = comment.getText().toString();
+                                    Comment comment = new Comment();
+                                    ParseUser currentUser = ParseUser.getCurrentUser();
+                                    ParseObject currentPost = finalPost1.getUser();
+
+                                    comment.setText(myText);
+                                    comment.setUser(currentUser);
+                                    comment.saveInBackground(new SaveCallback() {
+                                        @Override
+                                        public void done(com.parse.ParseException e) {
+                                            Toast.makeText(context, "Comment made successfully", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                    updateObject(comment, finalPost1.getObjectId());
+                                }
+                            }
+                    );
+                    b.setNegativeButton("Cancel",
+                            new DialogInterface.OnClickListener()
+                            {
+                                public void onClick(DialogInterface dialog, int whichButton)
+                                {
+                                    dialog.dismiss();
+                                }
+                            }
+                    );
+                    b.show();
+                }
+            });
+
+            TimeAgo timeAgo = new TimeAgo();
             tvDescription.setText(post.getDescription());
             tvUsername.setText(post.getUser().getUsername());
             tvLocation.setText(post.getLocation());
-            timeStamp.setText(calculateTimeAgo(post.getCreatedAt()));
+            timeStamp.setText(timeAgo.calculateTimeAgo(post.getCreatedAt()));
             ParseFile image = post.getImage();
             if (image != null) {
                 Glide.with(context).load(image.getUrl()).into(ivImage);
@@ -130,41 +213,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> im
             }
         }
 
-    }
-
-    public static String calculateTimeAgo(Date createdAt) {
-
-        int SECOND_MILLIS = 1000;
-        int MINUTE_MILLIS = 60 * SECOND_MILLIS;
-        int HOUR_MILLIS = 60 * MINUTE_MILLIS;
-        int DAY_MILLIS = 24 * HOUR_MILLIS;
-
-        try {
-            createdAt.getTime();
-            long time = createdAt.getTime();
-            long now = System.currentTimeMillis();
-
-            final long diff = now - time;
-            if (diff < MINUTE_MILLIS) {
-                return "just now";
-            } else if (diff < 2 * MINUTE_MILLIS) {
-                return "a minute ago";
-            } else if (diff < 50 * MINUTE_MILLIS) {
-                return diff / MINUTE_MILLIS + " m";
-            } else if (diff < 90 * MINUTE_MILLIS) {
-                return "an hour ago";
-            } else if (diff < 24 * HOUR_MILLIS) {
-                return diff / HOUR_MILLIS + " h";
-            } else if (diff < 48 * HOUR_MILLIS) {
-                return "yesterday";
-            } else {
-                return diff / DAY_MILLIS + " days ago";
-            }
-        } catch (Exception e) {
-            Log.i("Error:", "getRelativeTimeAgo failed", e);
-            e.printStackTrace();
-        }
-        return "";
     }
 
     public void clear() {
@@ -255,4 +303,23 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> im
         return exampleFilter;
     }
 
+    private void updateObject(Comment comment, String objectId) {
+        ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
+        query.getInBackground(objectId, (object, e) -> {
+            if (e == null) {
+                ParseRelation<Comment> relation = object.getRelation("comment");
+                relation.add(comment);
+                object.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(com.parse.ParseException e) {
+
+                    }
+                });
+
+            } else {
+                Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e(TAG, e.toString());
+            }
+        });
+    }
 }

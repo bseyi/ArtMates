@@ -25,6 +25,7 @@
         <entry key="app/src/main/res/font/open_sans_bold.xml" value="0.23148148148148148" />
         <entry key="app/src/main/res/font/open_sans_semibold.xml" value="0.23148148148148148" />
         <entry key="app/src/main/res/layout/activity_canvas.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/activity_comment.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_details.xml" value="0.286231884057971" />
         <entry key="app/src/main/res/layout/activity_info.xml" value="0.286231884057971" />
         <entry key="app/src/main/res/layout/activity_landing_page.xml" value="0.286231884057971" />
@@ -40,7 +41,8 @@
         <entry key="app/src/main/res/layout/fragment_post.xml" value="0.3890625" />
         <entry key="app/src/main/res/layout/fragment_posts.xml" value="0.2441123188405797" />
         <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.3890625" />
-        <entry key="app/src/main/res/layout/item_post.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/item_comment.xml" value="0.4036458333333333" />
+        <entry key="app/src/main/res/layout/item_post.xml" value="0.45" />
         <entry key="app/src/main/res/layout/message_incoming.xml" value="0.286231884057971" />
         <entry key="app/src/main/res/layout/message_outgoing.xml" value="0.286231884057971" />
         <entry key="app/src/main/res/layout/view_display.xml" value="0.5765625" />

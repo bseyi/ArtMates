@@ -146,8 +146,6 @@ public class LocationFragment extends Fragment {
             public boolean onQueryTextSubmit(String query) {
                 String label = idSearchView.getQuery().toString();
                 Log.i("LocationFragment", " Posts are " + posts2);
-                btnDown.setVisibility(View.INVISIBLE);
-                btnUp.setVisibility(View.INVISIBLE);
                 showPostLabels(map, label);
                 return false;
             }
@@ -421,15 +419,10 @@ public class LocationFragment extends Fragment {
                 for (Post post : posts) {
                     addMarker(post, googleMap, userLocation);
                 }
-                circle = googleMap.addCircle(new CircleOptions()
-                        .center(userLoc)
-                        .radius(radius)
-                        .strokeColor(Color.rgb(0, 136, 255))
-                        .fillColor(Color.argb(20, 0, 136, 255)));
+                addCircle(googleMap, userLoc);
             }
         });
-
-
+        markCurrentLocation(googleMap, userLoc);
     }
 
     private boolean isInMaxRadius(ParseGeoPoint currentUser, ParseGeoPoint post, int radius) {
@@ -505,6 +498,8 @@ public class LocationFragment extends Fragment {
                 }
             }
         });
+        markCurrentLocation(googleMap, userLoc);
+        addCircle(googleMap, userLoc);
     }
 
     private void addMarker(Post post, GoogleMap googleMap, ParseGeoPoint userLocation) {
@@ -531,7 +526,7 @@ public class LocationFragment extends Fragment {
                                     .position(currentPost)
                                     .visible(true)
                             );
-
+                            markerListener(googleMap);
                             newMarker.setTag(post);
                         } else {
                              newMarker = googleMap.addMarker(new MarkerOptions()
@@ -540,25 +535,13 @@ public class LocationFragment extends Fragment {
                                     .position(currentPost)
                                     .visible(false)
                             );
+                            markerListener(googleMap);
                             newMarker.setTag(post);
                         }
                     }
                 }
-
-            });
-            googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                @Override
-                public boolean onMarkerClick(@NonNull Marker marker) {
-                    Intent intent = new Intent(getContext(), DetailsActivity.class);
-                    marker.getTag();
-                    Post post = (Post) marker.getTag();
-                    intent.putExtra("posts", Parcels.wrap(post));
-                    startActivity(intent);
-                    return true;
-                }
             });
         }
-
     }
 
     private void moveCamera(LatLng latLng, GoogleMap googleMap){
@@ -567,6 +550,33 @@ public class LocationFragment extends Fragment {
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                 new LatLng(currentLat, currentLong), 12
         ));
+    }
+
+    private void addCircle(GoogleMap googleMap, LatLng userLoc){
+        circle = googleMap.addCircle(new CircleOptions()
+                .center(userLoc)
+                .radius(radius)
+                .strokeColor(Color.rgb(0, 136, 255))
+                .fillColor(Color.argb(20, 0, 136, 255)));
+    }
+
+    private void markCurrentLocation(GoogleMap googleMap, LatLng userLoc){
+        googleMap.addMarker(new MarkerOptions().position(userLoc).title("Current location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+
+    }
+
+    private void markerListener(GoogleMap googleMap){
+        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(@NonNull Marker marker) {
+                Intent intent = new Intent(getContext(), DetailsActivity.class);
+                marker.getTag();
+                Post post = (Post) marker.getTag();
+                intent.putExtra("posts", Parcels.wrap(post));
+                startActivity(intent);
+                return true;
+            }
+        });
     }
 
 }
