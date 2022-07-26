@@ -53,6 +53,20 @@
 * Delete chat feature
 * Drawing canvas feature, where users can draw on the screen and also save their drawing to their phone storage.
 
+** Technical Challenges
+
+* Filtering artwork by location, and vision labels using Image recognition API, query posts by distance, newest post, oldest post, earliest art created and, latest art created.
+* Combine query by distance and filter by label search on the map.
+* Canvas Activity with features that allows user to change background color, paintbrush color, size of the stroke, redo last activity, undo last activity, and save their activity to the phone storage.
+
+** External Library for visual polish
+* Create a user interface for cropping and rotating the photos of the artwork.
+
+** Animations/Gestures
+* Logo Animation.
+* Image Slide Right.
+* Pich to scale.
+* On Long Click
 
 ## Wireframes
 <img src="https://github.com/bseyi/Project_Idea/blob/main/IMG_3774.jpeg" width=600>
