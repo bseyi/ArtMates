@@ -4,7 +4,6 @@ import static android.app.Activity.RESULT_OK;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -79,6 +78,10 @@ import java.util.Locale;
 public class ComposeFragment extends Fragment implements DatePickerDialog.OnDateSetListener {
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 42;
     private static final String TAG = "ComposeFragment";
+    private static final String PHOTO_FILE_NAME = "photo.jpg";
+    private static final int COMPRESSION_QUALITY = 70;
+    private static final String KEY_LOCATION = "Location";
+
     private ImageView ivPostImage;
     private Button btnCanvas;
     private Button btnTakePhoto2;
@@ -87,7 +90,6 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
     private TextView tvLocation;
     private EditText etAboutWork;
     private TextView availableDate;
-    private final String photoFileName = "photo.jpg";
     private File photoFile;
     private Button btnSubmit;
     private ImageButton ibDate;
@@ -100,6 +102,7 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
     private static final String  AUTHORITY_NAME = "com.example.fileprovider.test";
     private final int CODE_IMG_GALLERY = 1;
     private final String SAMPLE_CROPPED_IMG_NAME = "SampleCropImg";
+    private ParseGeoPoint userLoc;
 
     public ComposeFragment() {
     }
@@ -175,7 +178,6 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
                     Toast.makeText(getContext(), "Image box cannot be empty", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
                 ParseUser currentUser = ParseUser.getCurrentUser();
                 savePost(description, aboutWork, location, date, currentUser, photoFile, labels);
             }
@@ -275,6 +277,11 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
                         client.requestLocationUpdates(locationRequest
                                 , locationCallback, Looper.myLooper());
                     }
+                    userLoc = new ParseGeoPoint();
+                    userLoc.setLatitude(location.getLatitude());
+                    userLoc.setLongitude(location.getLongitude());
+                    ParseUser user = ParseUser.getCurrentUser();
+                    user.put(KEY_LOCATION, userLoc);
 
                 }
             });
@@ -286,7 +293,7 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
 
     private void launchCamera() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        photoFile = getPhotoFileUri(photoFileName);
+        photoFile = getPhotoFileUri(PHOTO_FILE_NAME);
 
         Uri fileProvider = FileProvider.getUriForFile(getContext(), AUTHORITY_NAME, photoFile);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider);
@@ -303,7 +310,7 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
-                LabelSave(takenImage);
+                labelSave(takenImage);
             } else {
                 Toast.makeText(getContext(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
             }
@@ -314,9 +321,9 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
             }
         }
         else if(requestCode == UCrop.REQUEST_CROP) {
-            photoFile = getPhotoFileUri(photoFileName);
+            photoFile = getPhotoFileUri(PHOTO_FILE_NAME);
 
-            File f = new File(getContext().getCacheDir(), photoFileName);
+            File f = new File(getContext().getCacheDir(), PHOTO_FILE_NAME);
                 try {
                     f.createNewFile();
                 } catch (IOException e) {
@@ -325,7 +332,7 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
                 Uri imageUriResultCrop = UCrop.getOutput(data);
                 Bitmap selectedImage = loadFromUri(imageUriResultCrop);
 
-                LabelSave(selectedImage);
+                labelSave(selectedImage);
 
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
                 selectedImage.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
@@ -363,10 +370,7 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
         UCrop uCrop = UCrop.of(uri, Uri.fromFile(new File(getContext().getCacheDir(), destinationFileName)));
 
         uCrop.withAspectRatio(1,1);
-        uCrop.withAspectRatio(3,4);
         uCrop.useSourceImageAspectRatio();
-        uCrop.withAspectRatio(2,3);
-        uCrop.withAspectRatio(16,9);
 
         uCrop.withMaxResultSize(450,450);
 
@@ -377,11 +381,7 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
 
     private UCrop.Options getCropOptions(){
         UCrop.Options options = new UCrop.Options();
-        options.setCompressionQuality(70);
-
-        //CompressType
-        options.setCompressionFormat(Bitmap.CompressFormat.PNG);
-        options.setCompressionFormat(Bitmap.CompressFormat.JPEG);
+        options.setCompressionQuality(COMPRESSION_QUALITY);
 
         //UI
         options.setHideBottomControls(false);
@@ -397,7 +397,7 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
     }
 
 
-    public File getPhotoFileUri(String fileName) {
+    private File getPhotoFileUri(String fileName) {
         File mediaStorageDir = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), TAG);
         if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()) {
             Log.d(TAG, "failed to create directory");
@@ -407,7 +407,7 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
         return new File(mediaStorageDir.getPath() + File.separator + fileName);
     }
 
-    public Bitmap loadFromUri(Uri photoUri) {
+    private Bitmap loadFromUri(Uri photoUri) {
         Bitmap image = null;
         try {
             if (Build.VERSION.SDK_INT > 27) {
@@ -440,7 +440,6 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
             @Override
             public void done(ParseException e) {
                 if (e != null) {
-                    Log.i(TAG, "Error saving post", e);
                     Toast.makeText(getContext(), "Error saving post", Toast.LENGTH_SHORT).show();
                 }
                 tvCaption.setText("");
@@ -455,7 +454,7 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
         });
     }
 
-    public void goToPostsFragment() {
+    private void goToPostsFragment() {
         Intent i = new Intent(getContext(), MainActivity.class);
         startActivity(i);
     }
@@ -471,7 +470,7 @@ public class ComposeFragment extends Fragment implements DatePickerDialog.OnDate
         availableDate.setText(currentDateString);
     }
 
-    private void LabelSave(Bitmap takenImage) {
+    private void labelSave(Bitmap takenImage) {
         ivPostImage.setImageBitmap(takenImage);
         List<ImageClassifier.Recognition> predictions = imageClassifier.recognizeImage(
                 takenImage, 0);

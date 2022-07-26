@@ -61,11 +61,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         }
 
         public void bind(Comment comment) {
-            TimeAgo timeAgo = new TimeAgo();
-
             username.setText(comment.getUser().getUsername());
             userComment.setText(comment.getText());
-            timeAgoTxt.setText(timeAgo.calculateTimeAgo(comment.getCreatedAt()));
+            timeAgoTxt.setText(TimeAgo.calculateTimeAgo(comment.getCreatedAt()));
 
             ParseFile profileImg = (ParseFile) comment.getUser().get("profilePicture");
             if (profileImg != null) {

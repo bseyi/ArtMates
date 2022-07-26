@@ -5,7 +5,7 @@ import android.util.Log;
 import java.util.Date;
 
 public class TimeAgo {
-    public String calculateTimeAgo(Date createdAt) {
+    public static String calculateTimeAgo(Date createdAt) {
 
         int SECOND_MILLIS = 1000;
         int MINUTE_MILLIS = 60 * SECOND_MILLIS;

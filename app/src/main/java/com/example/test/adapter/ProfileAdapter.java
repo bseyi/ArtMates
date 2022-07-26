@@ -130,6 +130,9 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
             if (image != null) {
                 Glide.with(context).load(image.getUrl()).into(ivImage2);
             }
+            if (image == null){
+                Toast.makeText(context, "No posts to display", Toast.LENGTH_SHORT).show();
+            }
             if (profileImg != null) {
                 Glide.with(context).load(profileImg.getUrl()).circleCrop().into(ivImage2);
             }

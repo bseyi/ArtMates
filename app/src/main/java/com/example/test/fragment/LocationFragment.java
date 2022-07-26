@@ -86,10 +86,13 @@ import java.util.List;
 
 
 public class LocationFragment extends Fragment {
+    private static final int COMPRESSION_QUALITY = 50;
+    private static final int BITMAP_SIZE = 200;
+    private static final int REQUEST_CODE = 44;
+
     private static final String TAG = "LocationFragment";
     private final int MAX_RADIUS = 25000;
     private final int MIN_RADIUS = 2000;
-    private final List<Post> posts2 = new ArrayList<>();
     private Spinner spType;
     private Button btFind;
     private SupportMapFragment supportMapFragment;
@@ -102,7 +105,7 @@ public class LocationFragment extends Fragment {
     private int radius = 10000;
     private Circle circle;
     private SearchView idSearchView;
-    private LatLng latLng2;
+    private LatLng currentLocLatLng;
 
 
     public LocationFragment() {
@@ -145,7 +148,6 @@ public class LocationFragment extends Fragment {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 String label = idSearchView.getQuery().toString();
-                Log.i("LocationFragment", " Posts are " + posts2);
                 showPostLabels(map, label);
                 return false;
             }
@@ -212,7 +214,7 @@ public class LocationFragment extends Fragment {
         btnCurrentLoc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                moveCamera(latLng2, map);
+                moveCamera(currentLocLatLng, map);
             }
         });
 
@@ -222,7 +224,7 @@ public class LocationFragment extends Fragment {
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             return true;
         } else {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 44);
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_CODE);
         }
         return true;
     }
@@ -248,6 +250,7 @@ public class LocationFragment extends Fragment {
                 if (currentLocation != null){
                     currentLat = currentLocation.getLatitude();
                     currentLong = currentLocation.getLongitude();
+
                     supportMapFragment.getMapAsync(new OnMapReadyCallback() {
                         @Override
                         public void onMapReady(@NonNull GoogleMap googleMap) {
@@ -259,7 +262,7 @@ public class LocationFragment extends Fragment {
                             showUsers(googleMap);
 
                             LatLng latlng = new LatLng(currentLat, currentLong);
-                            latLng2 = latlng;
+                            currentLocLatLng = latlng;
                             map = googleMap;
                             moveCamera(latlng, map);
                         }
@@ -513,31 +516,24 @@ public class LocationFragment extends Fragment {
                     if (e == null && data != null) {
                         Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, COMPRESSION_QUALITY, baos);
                         final byte[] b = baos.toByteArray();
 
-                        Bitmap thumbnail = ThumbnailUtils.extractThumbnail(getCroppedBitmap(bitmap), 200, 200);
+                        Bitmap thumbnail = ThumbnailUtils.extractThumbnail(getCroppedBitmap(bitmap), BITMAP_SIZE, BITMAP_SIZE);
 
-                        Marker newMarker;
-                        if (isInMaxRadius(userLocation, postLocation, radius)) {
-                             newMarker = googleMap.addMarker(new MarkerOptions()
-                                    .title("Posts")
-                                    .icon(BitmapDescriptorFactory.fromBitmap(thumbnail))
-                                    .position(currentPost)
-                                    .visible(true)
-                            );
-                            markerListener(googleMap);
-                            newMarker.setTag(post);
-                        } else {
-                             newMarker = googleMap.addMarker(new MarkerOptions()
-                                    .title("Posts")
-                                    .icon(BitmapDescriptorFactory.fromBitmap(thumbnail))
-                                    .position(currentPost)
-                                    .visible(false)
-                            );
-                            markerListener(googleMap);
-                            newMarker.setTag(post);
+                        Marker newMarker = googleMap.addMarker(new MarkerOptions()
+                                .title("Posts")
+                                .icon(BitmapDescriptorFactory.fromBitmap(thumbnail))
+                                .position(currentPost)
+                        );
+                        if(isInMaxRadius(userLocation, postLocation, radius)) {
+                            newMarker.setVisible(true);
                         }
+                        else {
+                            newMarker.setVisible(false);
+                        }
+                        newMarker.setTag(post);
+                        markerListener(googleMap);
                     }
                 }
             });

@@ -46,7 +46,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> implements Filterable {
+public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
     private static final String TAG = "PostAdapter";
     private Context context;
     private List<Post> posts;
@@ -154,47 +154,45 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> im
                 }
             });
 
-            Post finalPost1 = post;
             commentButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    AlertDialog.Builder b = new  AlertDialog.Builder(context);
-                    b.setTitle("Say something nice");
+                    ParseUser currentUser = ParseUser.getCurrentUser();
 
                     final EditText comment = new EditText(context);
                     comment.setInputType(InputType.TYPE_CLASS_TEXT);
 
-                    b.setView(comment);
-                    b.setPositiveButton("Comment",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                    myText = comment.getText().toString();
-                                    Comment comment = new Comment();
-                                    ParseUser currentUser = ParseUser.getCurrentUser();
-                                    ParseObject currentPost = finalPost1.getUser();
+                    new AlertDialog.Builder(context)
+                            .setView(comment)
+                            .setTitle("Say something nice")
+                            .setPositiveButton("Comment",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int whichButton) {
+                                            myText = comment.getText().toString();
+                                            Comment comment = new Comment();
 
-                                    comment.setText(myText);
-                                    comment.setUser(currentUser);
-                                    comment.saveInBackground(new SaveCallback() {
-                                        @Override
-                                        public void done(com.parse.ParseException e) {
-                                            Toast.makeText(context, "Comment made successfully", Toast.LENGTH_SHORT).show();
+                                            comment.setText(myText);
+                                            comment.setUser(currentUser);
+                                            comment.saveInBackground(new SaveCallback() {
+                                                @Override
+                                                public void done(com.parse.ParseException e) {
+                                                    Toast.makeText(context, "Comment made successfully", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                            updateObject(comment, finalPost.getObjectId());
                                         }
-                                    });
-                                    updateObject(comment, finalPost1.getObjectId());
-                                }
-                            }
-                    );
-                    b.setNegativeButton("Cancel",
-                            new DialogInterface.OnClickListener()
-                            {
-                                public void onClick(DialogInterface dialog, int whichButton)
-                                {
-                                    dialog.dismiss();
-                                }
-                            }
-                    );
-                    b.show();
+                                    }
+                            )
+                            .setNegativeButton("Cancel",
+                                    new DialogInterface.OnClickListener()
+                                    {
+                                        public void onClick(DialogInterface dialog, int whichButton)
+                                        {
+                                            dialog.dismiss();
+                                        }
+                                    }
+                            )
+                            .show();
                 }
             });
 
@@ -222,85 +220,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> im
         notifyItemRangeRemoved(0, size);
     }
 
-    public void sortByDateEarliest() throws ParseException {
-
-        Collections.sort(postsToDisplay, new Comparator<Post>() {
-            @Override
-            public int compare(Post o1, Post o2) {
-                try {
-                    return o1.getDateObject().compareTo(o2.getDateObject());
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                return -1;
-            }
-
-        });
-        notifyDataSetChanged();
-    }
-
-    public void sortByDateLatest() {
-
-        Collections.sort(postsToDisplay, new Comparator<Post>() {
-            @Override
-            public int compare(Post o1, Post o2) {
-                try {
-                    return o2.getDateObject().compareTo(o1.getDateObject());
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                return -1;
-            }
-        });
-        notifyDataSetChanged();
-    }
-
     public void addAll(List<Post> list) {
         posts.addAll(list);
         postsToDisplay.addAll(list);
         notifyDataSetChanged();
-    }
-
-    private Filter exampleFilter = new Filter() {
-        @Override
-        protected FilterResults performFiltering(CharSequence constraint) {
-
-            List<Post> filteredList = new ArrayList<>();
-            if (constraint == null || constraint.length() == 0) {
-                filteredList.addAll(posts);
-            } else {
-
-                String filterPattern = constraint.toString().toLowerCase().trim();
-
-                for (Post post : posts) {
-                    if (post.getLabels().toLowerCase().contains(filterPattern)) {
-                        filteredList.add(post);
-                    }
-                }
-            }
-
-            FilterResults results = new FilterResults();
-            results.values = filteredList;
-            results.count = filteredList.size();
-            return results;
-        }
-
-        @Override
-        protected void publishResults(CharSequence constraint, FilterResults results) {
-            postsToDisplay.clear();
-            if (results.values == null) {
-                Log.e("PostsAdapter", "results.values is null");
-            } else {
-                postsToDisplay.addAll((List) results.values);
-                Log.d("PostsAdapter", "Displaying " + results.count + " results through filter");
-            }
-            notifyDataSetChanged();
-        }
-    };
-
-    @Override
-    public Filter getFilter() {
-        return exampleFilter;
     }
 
     private void updateObject(Comment comment, String objectId) {
@@ -318,7 +241,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> im
 
             } else {
                 Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                Log.e(TAG, e.toString());
             }
         });
     }

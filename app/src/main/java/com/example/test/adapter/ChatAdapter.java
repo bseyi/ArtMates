@@ -33,6 +33,14 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
     private final String mUserId;
     private static final int MESSAGE_OUTGOING = 123;
     private static final int MESSAGE_INCOMING = 321;
+    private static final String DELETE = "Delete?";
+    private static final String POSITIVE_BTN = "Yes";
+    private static final String NEGATIVE_BTN = "Cancel";
+
+    private static final String PROFILE_PIC = "profilePicture";
+
+
+
 
     @Override
     public int getItemViewType(int position) {
@@ -103,7 +111,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
 
             body.setText(message.getBody());
             name.setText(message.getUser().getUsername());
-            ParseFile profileImg = (ParseFile) message.getUser().get("profilePicture");
+            ParseFile profileImg = (ParseFile) message.getUser().get(PROFILE_PIC);
             if (profileImg != null) {
                 Glide.with(mContext).load(profileImg.getUrl()).circleCrop().into(imageOther);
             }
@@ -127,9 +135,9 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
             if(ParseUser.getCurrentUser() != null)
             {
                 ParseUser user = ParseUser.getCurrentUser();
-                if(user.getParseFile("profilePicture") != null){
+                if(user.getParseFile(PROFILE_PIC) != null){
                     Glide.with(mContext)
-                            .load(user.getParseFile("profilePicture").getUrl())
+                            .load(user.getParseFile(PROFILE_PIC).getUrl())
                             .circleCrop() // create an effect of a round profile picture
                             .into(imageMe);
                 }
@@ -141,14 +149,12 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
                 @Override
                 public boolean onLongClick(View v) {
                     AlertDialog.Builder saveDialog = new AlertDialog.Builder(mContext);
-                    saveDialog.setTitle("Delete?");
-                    saveDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    saveDialog.setTitle(DELETE);
+                    saveDialog.setPositiveButton(POSITIVE_BTN, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             int position = getAdapterPosition();
                             Message message = mMessages.get(position);
-                            Log.i("Position", "Position is "+ message);
-
                             message.deleteInBackground(new DeleteCallback() {
                                 @Override
                                 public void done(ParseException e2) {
@@ -164,7 +170,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
                             notifyDataSetChanged();
                         }
                     });
-                    saveDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    saveDialog.setNegativeButton(NEGATIVE_BTN, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.cancel();

@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.example.test.Post;
 import com.example.test.R;
 import com.example.test.adapter.PostAdapter;
+import com.google.android.gms.maps.model.LatLng;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
@@ -141,34 +142,20 @@ public class PostsFragment extends Fragment {
                 adapter.clear();
                 queryByMileRadius();
                 adapter.notifyDataSetChanged();
-                return true;
+                break;
 
             case R.id.newest:
                 adapter.clear();
                 queryPostsNewest();
                 adapter.notifyDataSetChanged();
-
-                return true;
+                break;
 
             case R.id.oldest:
                 adapter.clear();
                 queryPostsOldest();
                 adapter.notifyDataSetChanged();
+                break;
 
-                return true;
-
-            case R.id.early_date:
-                try {
-                    adapter.sortByDateEarliest();
-                } catch (java.text.ParseException e) {
-                    e.printStackTrace();
-                }
-
-                return true;
-            case R.id.late_date:
-                adapter.sortByDateLatest();
-
-                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -185,12 +172,36 @@ public class PostsFragment extends Fragment {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                adapter.getFilter().filter(query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                adapter.clear();
+                adapter.notifyDataSetChanged();
+
+                ParseQuery<Post> searchQuery = ParseQuery.getQuery(Post.class);
+                searchQuery.setLimit(POST_LIMIT);
+                searchQuery.addAscendingOrder(Post.KEY_CREATED_AT);
+
+                searchQuery.findInBackground(new FindCallback<Post>() {
+                    @Override
+                    public void done(List<Post> posts, ParseException e) {
+                        if (e != null) {
+                            Log.e(TAG, "Issue with getting posts", e);
+                            return;
+                        }
+                        else {
+                            for (Post post : posts) {
+                                if (post.getLabels().toLowerCase().contains(newText)) {
+                                    allPosts.add(post);
+                                }
+                            }
+                            adapter.addAll(allPosts);
+                        }
+                    }
+                });
+                adapter.notifyDataSetChanged();
                 return false;
             }
         });
