@@ -17,12 +17,6 @@
         android:title="Newest Post" />
     <item android:id="@+id/oldest"
         android:title="Oldest Post" />
-    <item
-        android:id="@+id/early_date"
-        android:title="Earliest Art Created" />
-    <item
-        android:id="@+id/late_date"
-        android:title="Latest Art Created" />
 
 </menu>
 

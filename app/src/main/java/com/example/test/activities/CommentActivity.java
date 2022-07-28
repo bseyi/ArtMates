@@ -62,7 +62,6 @@ public class CommentActivity extends AppCompatActivity {
                                     if (e == null) {
                                         for (Comment c : comment) {
                                             comments.add(c);
-                                            Log.i(TAG, "Comments are " + comments);
                                             recyclerView.setAdapter(commentAdapter);
                                             recyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
                                         }
@@ -74,8 +73,6 @@ public class CommentActivity extends AppCompatActivity {
                         }
 
                     }
-//                    ParseRelation<Comment> mRelation = posts.get(0).getRelation("comment");
-
                 }
             }
         });

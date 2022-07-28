@@ -27,9 +27,11 @@ public class LandingPageActivity extends AppCompatActivity {
         if(ParseUser.getCurrentUser() != null) {
             goMainActivity();
         }
-        icon = findViewById(R.id.icon);
         btnLogin = findViewById(R.id.btnLogin);
         btnSignUp = findViewById(R.id.btnSignUp);
+
+        icon = findViewById(R.id.icon);
+
 
         Animation animation = AnimationUtils.loadAnimation(this,R.anim.anim);
         icon.startAnimation(animation);

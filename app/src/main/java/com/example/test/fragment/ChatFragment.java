@@ -121,10 +121,8 @@ public class ChatFragment extends Fragment {
                     @Override
                     public void done(ParseException e) {
                         if (e == null) {
-                            Toast.makeText(getActivity(), "Successfully created message on Parse",
-                                    Toast.LENGTH_SHORT).show();
+
                         } else {
-                            Log.e(TAG, "Failed to save message", e);
                             Toast.makeText(getActivity(), "Failed to save message",
                                     Toast.LENGTH_SHORT).show();
                         }
@@ -140,7 +138,6 @@ public class ChatFragment extends Fragment {
     private void refreshMessages() {
         ParseQuery<Message> query = ParseQuery.getQuery(Message.class);
         query.setLimit(MAX_CHAT_MESSAGES_TO_SHOW);
-
         query.orderByDescending("createdAt");
 
         query.findInBackground(new FindCallback<Message>() {

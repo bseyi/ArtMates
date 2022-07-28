@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/blackwhite_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -15,35 +16,47 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/rlSend"
-        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
-        android:paddingTop="5dp"
-        android:paddingBottom="10dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:paddingLeft="0dp"
+        android:paddingTop="5dp"
         android:paddingRight="0dp"
-        android:layout_height="wrap_content" >
+        android:paddingBottom="10dp">
 
         <EditText
             android:id="@+id/etMessage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="43dp"
             android:layout_alignBottom="@+id/ibSend"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="4dp"
+            android:layout_toStartOf="@+id/ibSend"
             android:layout_toLeftOf="@+id/ibSend"
+            android:background="@color/white"
             android:gravity="top"
             android:hint="@string/hint"
             android:imeOptions="actionSend"
+            android:inputType="textShortMessage"
             android:textColorHint="@color/black"
-            android:inputType="textShortMessage" />
+            app:layout_constraintBottom_toBottomOf="@+id/ibSend"
+            app:layout_constraintEnd_toStartOf="@+id/ibSend"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/ibSend" />
+
         <ImageButton
             android:id="@+id/ibSend"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="51dp"
+            android:layout_height="42dp"
+            android:layout_alignParentRight="true"
             android:gravity="center"
             android:paddingRight="10dp"
-            android:layout_alignParentRight="true"
             android:src="@android:drawable/ic_menu_send"
-            android:textSize="18sp" />
-    </RelativeLayout>
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </RelativeLayout>

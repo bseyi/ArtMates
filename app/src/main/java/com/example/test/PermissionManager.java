@@ -27,18 +27,4 @@ public class PermissionManager {
         return hasPermission;
     }
 
-    public static void checkLocation(Activity activity){
-
-       boolean hasPermission = (ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED);
-        if (!hasPermission) {
-            ActivityCompat.requestPermissions(activity,
-                    new String[]{
-                            Manifest.permission.ACCESS_FINE_LOCATION},
-                    REQUEST_FINE_LOCATION);
-
-        }
-
-
-    }
-
 }

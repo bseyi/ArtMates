@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.example.test.R;
 import com.parse.ParseException;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
@@ -58,14 +59,11 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     private void signUpUser(String username, String password, String email, String fullName) {
-        Log.i(TAG, "Attempting to login user");
-
         ParseUser user = new ParseUser();
         user.setUsername(username);
         user.setPassword(password);
         user.setEmail(email);
         user.put("fullName", fullName);
-
         user.signUpInBackground(new SignUpCallback() {
             @Override
             public void done(ParseException e) {
@@ -76,7 +74,6 @@ public class SignupActivity extends AppCompatActivity {
                 }
                 else{
                     Toast.makeText(SignupActivity.this, "Error signing up", Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, "Error signing up");
                 }
             }
         });

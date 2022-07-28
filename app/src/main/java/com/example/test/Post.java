@@ -1,5 +1,7 @@
 package com.example.test;
 
+import android.graphics.Bitmap;
+
 import com.parse.ParseClassName;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -21,6 +23,7 @@ public class Post extends ParseObject {
     public static final String KEY_LABELS = "labels1";
     public static final String OBJECT_ID = "objectId";
     public static final String KEY_GEOLOCATION = "GeoLocation";
+    public static final String KEY_LIKE = "Like";
 
     public String getLabels(){return getString(KEY_LABELS);};
 
@@ -99,6 +102,17 @@ public class Post extends ParseObject {
 
     public void setGeoLocation(ParseGeoPoint location){
         put(KEY_GEOLOCATION, location);
+    }
+
+    public void setLike (){
+        put(KEY_LIKE, true);
+    }
+    public void resetLike(){
+        put(KEY_LIKE, false);
+    }
+
+    public boolean getLike(){
+        return getBoolean(KEY_LIKE);
     }
 
 }

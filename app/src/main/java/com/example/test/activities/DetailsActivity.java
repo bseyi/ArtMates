@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Parcel;
 import android.util.Log;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -69,7 +68,7 @@ public class DetailsActivity extends AppCompatActivity {
         if (image != null) {
             imageView.startAnimation(AnimationUtils.loadAnimation(
                     getApplicationContext(),
-                    R.anim.fade_in
+                    R.anim.slide_right
             ));
             Glide.with(this).load(image.getUrl()).into(imageView);
         }
@@ -88,7 +87,6 @@ public class DetailsActivity extends AppCompatActivity {
 
 
         if (postUser != null) {
-            Log.d("DetailsActivity", "user = " + postUser.getUsername());
             tvUsername.setText(postUser.getUsername());
         }
         if (timestamp != null) {
