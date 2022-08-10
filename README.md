@@ -8,7 +8,7 @@
 1. [Wireframes](#Wireframes)
 
 ## DemoLink
-(https://drive.google.com/drive/my-drive)
+(https://drive.google.com/file/d/1-0LfXFwuuYrg_6hkpF6HUSNmz2eP_Rcf/view?usp=sharing)
 ## Overview
 ### App Ideas
  - An app that creates a platform for young and upcoming artists around the world to showcase their artworks.
